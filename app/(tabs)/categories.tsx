@@ -153,7 +153,8 @@ export default function Categories() {
             <Text style={styles.sectionTitle}>Default Categories</Text>
             <Text style={styles.sectionSubtitle}>
               These categories are provided by the system and cannot be modified
-          </Text> {/* No edit/delete actions for default categories */}
+            </Text>
+            {/* No edit/delete actions for default categories */}
             {defaultCategories.map(renderCategoryItem)}
           </View>
         )}
