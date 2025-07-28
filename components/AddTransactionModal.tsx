@@ -23,7 +23,7 @@ interface AddTransactionModalProps {
 }
 
 export default function AddTransactionModal({ visible, onClose, transaction }: AddTransactionModalProps) {
-  const { addTransaction, updateTransaction, showToast, getCategories } = useApp();
+  const { addTransaction, updateTransaction, showToast, getCategories, getPersonalCategories } = useApp();
   const { incrementTransactionCount } = useGuest();
   const [type, setType] = useState<'expense' | 'income'>('expense');
   const [amount, setAmount] = useState('');
