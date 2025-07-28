@@ -203,9 +203,6 @@ export default function Dashboard() {
             <Text style={styles.greeting}>{getGreeting()}</Text>
             <Text style={styles.userName}>{getUserName()}</Text>
           </View>
-          <TouchableOpacity style={styles.notificationButton}>
-            <Bell size={24} color={colors.textTertiary} />
-          </TouchableOpacity>
           <TouchableOpacity 
             style={styles.notificationButton}
             onPress={() => router.push('/(tabs)/notifications')}
