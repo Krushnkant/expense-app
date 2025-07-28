@@ -206,6 +206,12 @@ export default function Dashboard() {
           <TouchableOpacity style={styles.notificationButton}>
             <Bell size={24} color={colors.textTertiary} />
           </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.notificationButton}
+            onPress={() => router.push('/(tabs)/notifications')}
+          >
+            <Bell size={24} color={colors.textTertiary} />
+          </TouchableOpacity>
         </View>
 
         {/* Guest Mode Indicator */}
