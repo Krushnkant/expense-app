@@ -19,18 +19,35 @@ export default function Categories() {
   const { state, deleteCategory, showToast } = useApp();
   const { state: themeState } = useTheme();
   const [selectedType, setSelectedType] = useState<'expense' | 'income'>('expense');
+  const [selectedScope, setSelectedScope] = useState<'personal' | 'family'>('family');
   const [showAddModal, setShowAddModal] = useState(false);
 
   const { colors } = themeState.theme;
   const styles = createStyles(colors);
 
-  const filteredCategories = state.categories.filter(category => category.type === selectedType);
+  const filteredCategories = state.categories.filter(category => 
+    category.type === selectedType && category.scopes.includes(selectedScope)
+  );
   const defaultCategories = filteredCategories.filter(category => category.isDefault);
   const userCategories = filteredCategories.filter(category => !category.isDefault);
 
-  // Get actual counts for each type (not filtered by selectedType)
-  const expenseCount = state.categories.filter(c => c.type === 'expense').length; // Correctly counts all expense categories
-  const incomeCount = state.categories.filter(c => c.type === 'income').length;   // Correctly counts all income categories
+  // Get actual counts for each type and scope combination
+  const getCount = (type: 'expense' | 'income', scope: 'personal' | 'family') => {
+    return state.categories.filter(c => c.type === type && c.scopes.includes(scope)).length;
+  };
+
+  const expensePersonalCount = getCount('expense', 'personal');
+  const expenseFamilyCount = getCount('expense', 'family');
+  const incomePersonalCount = getCount('income', 'personal');
+  const incomeFamilyCount = getCount('income', 'family');
+
+  const getCurrentCount = () => {
+    if (selectedType === 'expense') {
+      return selectedScope === 'personal' ? expensePersonalCount : expenseFamilyCount;
+    } else {
+      return selectedScope === 'personal' ? incomePersonalCount : incomeFamilyCount;
+    }
+  };
 
   const handleEditCategory = (category: Category) => {
     if (category.isDefault) {
@@ -94,7 +111,9 @@ export default function Categories() {
                 </View>
               )}
             </View>
-            <Text style={styles.categoryType}>{category.type}</Text>
+            <Text style={styles.categoryType}>
+              {category.type} • {category.scopes.join(', ')}
+            </Text>
           </View>
         </View>
       </View>
@@ -120,6 +139,32 @@ export default function Categories() {
         </TouchableOpacity>
       </View>
 
+      {/* Scope Filter */}
+      <View style={styles.filterContainer}>
+        <TouchableOpacity
+          style={[styles.filterButton, selectedScope === 'personal' && styles.filterButtonActive]}
+          onPress={() => setSelectedScope('personal')}
+        >
+          <Text style={[
+            styles.filterButtonText,
+            selectedScope === 'personal' && styles.filterButtonTextActive
+          ]}>
+            Personal Categories
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.filterButton, selectedScope === 'family' && styles.filterButtonActive]}
+          onPress={() => setSelectedScope('family')}
+        >
+          <Text style={[
+            styles.filterButtonText,
+            selectedScope === 'family' && styles.filterButtonTextActive
+          ]}>
+            Family Categories
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Type Filter */}
       <View style={styles.filterContainer}>
         <TouchableOpacity
@@ -130,7 +175,7 @@ export default function Categories() {
             styles.filterButtonText,
             selectedType === 'expense' && styles.filterButtonTextActive
           ]}>
-            Expenses ({expenseCount})
+            Expenses ({getCurrentCount()})
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -141,7 +186,7 @@ export default function Categories() {
             styles.filterButtonText,
             selectedType === 'income' && styles.filterButtonTextActive
           ]}>
-            Income ({incomeCount})
+            Income ({getCurrentCount()})
           </Text>
         </TouchableOpacity>
       </View>
@@ -152,7 +197,7 @@ export default function Categories() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Default Categories</Text>
             <Text style={styles.sectionSubtitle}>
-              These categories are provided by the system and cannot be modified
+              These categories are provided by the system and cannot be modified. They are available for both personal and family use.
             </Text>
             {/* No edit/delete actions for default categories */}
             {defaultCategories.map(renderCategoryItem)}
@@ -163,7 +208,10 @@ export default function Categories() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Your Categories</Text>
           <Text style={styles.sectionSubtitle}>
-            Categories you've created - you can edit or delete these
+            {selectedScope === 'personal' 
+              ? 'Personal categories you\'ve created - only visible to you'
+              : 'Family categories you\'ve created - shared with family members'
+            }
           </Text>
           
           {userCategories.length > 0 ? (
@@ -180,7 +228,9 @@ export default function Categories() {
                     <View style={styles.categoryHeader}>
                       <Text style={styles.categoryName}>{category.name}</Text>
                     </View>
-                    <Text style={styles.categoryType}>{category.type}</Text>
+                    <Text style={styles.categoryType}>
+                      {category.type} • {category.scopes.join(', ')}
+                    </Text>
                   </View>
                 </View>
                 
@@ -202,9 +252,11 @@ export default function Categories() {
             ))
           ) : (
             <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>No custom categories yet</Text>
+              <Text style={styles.emptyStateText}>
+                No {selectedScope} categories yet
+              </Text>
               <Text style={styles.emptyStateSubtext}>
-                Tap the + button to create your first custom category
+                Tap the + button to create your first {selectedScope} category
               </Text>
             </View>
           )}

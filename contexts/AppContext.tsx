@@ -52,25 +52,25 @@ const initialState: AppState = {
 
 const defaultCategories: Category[] = [
   // Expense Categories
-  { id: '1', name: 'Food & Dining', type: 'expense', color: '#EF4444', icon: 'Utensils', scopes: ['family'], isDefault: true },
-  { id: '2', name: 'Transportation', type: 'expense', color: '#3B82F6', icon: 'Car', scopes: ['family'], isDefault: true },
-  { id: '3', name: 'Shopping', type: 'expense', color: '#8B5CF6', icon: 'ShoppingBag', scopes: ['family'], isDefault: true },
-  { id: '4', name: 'Entertainment', type: 'expense', color: '#F59E0B', icon: 'Tv', scopes: ['family'], isDefault: true },
-  { id: '5', name: 'Bills & Utilities', type: 'expense', color: '#4facfe', icon: 'Receipt', scopes: ['family'], isDefault: true },
-  { id: '6', name: 'Healthcare', type: 'expense', color: '#EF4444', icon: 'Heart', scopes: ['family'], isDefault: true },
-  { id: '7', name: 'Education', type: 'expense', color: '#6366F1', icon: 'Book', scopes: ['family'], isDefault: true },
-  { id: '8', name: 'Personal Care', type: 'expense', color: '#EC4899', icon: 'Sparkles', scopes: ['family'], isDefault: true },
-  { id: '9', name: 'Travel', type: 'expense', color: '#10B981', icon: 'Plane', scopes: ['family'], isDefault: true },
-  { id: '10', name: 'Groceries', type: 'expense', color: '#059669', icon: 'ShoppingCart', scopes: ['family'], isDefault: true },
-  { id: '11', name: 'Other', type: 'expense', color: '#6B7280', icon: 'MoreHorizontal', scopes: ['family'], isDefault: true },
+  { id: '1', name: 'Food & Dining', type: 'expense', color: '#EF4444', icon: 'Utensils', scopes: ['personal', 'family'], isDefault: true },
+  { id: '2', name: 'Transportation', type: 'expense', color: '#3B82F6', icon: 'Car', scopes: ['personal', 'family'], isDefault: true },
+  { id: '3', name: 'Shopping', type: 'expense', color: '#8B5CF6', icon: 'ShoppingBag', scopes: ['personal', 'family'], isDefault: true },
+  { id: '4', name: 'Entertainment', type: 'expense', color: '#F59E0B', icon: 'Tv', scopes: ['personal', 'family'], isDefault: true },
+  { id: '5', name: 'Bills & Utilities', type: 'expense', color: '#4facfe', icon: 'Receipt', scopes: ['personal', 'family'], isDefault: true },
+  { id: '6', name: 'Healthcare', type: 'expense', color: '#EF4444', icon: 'Heart', scopes: ['personal', 'family'], isDefault: true },
+  { id: '7', name: 'Education', type: 'expense', color: '#6366F1', icon: 'Book', scopes: ['personal', 'family'], isDefault: true },
+  { id: '8', name: 'Personal Care', type: 'expense', color: '#EC4899', icon: 'Sparkles', scopes: ['personal', 'family'], isDefault: true },
+  { id: '9', name: 'Travel', type: 'expense', color: '#10B981', icon: 'Plane', scopes: ['personal', 'family'], isDefault: true },
+  { id: '10', name: 'Groceries', type: 'expense', color: '#059669', icon: 'ShoppingCart', scopes: ['personal', 'family'], isDefault: true },
+  { id: '11', name: 'Other', type: 'expense', color: '#6B7280', icon: 'MoreHorizontal', scopes: ['personal', 'family'], isDefault: true },
   
   // Income Categories
-  { id: '12', name: 'Salary', type: 'income', color: '#4facfe', icon: 'Briefcase', scopes: ['family'], isDefault: true },
-  { id: '13', name: 'Freelance', type: 'income', color: '#2563EB', icon: 'Laptop', scopes: ['family'], isDefault: true },
-  { id: '14', name: 'Investment', type: 'income', color: '#1D4ED8', icon: 'TrendingUp', scopes: ['family'], isDefault: true },
-  { id: '15', name: 'Business', type: 'income', color: '#059669', icon: 'Building', scopes: ['family'], isDefault: true },
-  { id: '16', name: 'Bonus', type: 'income', color: '#DC2626', icon: 'Gift', scopes: ['family'], isDefault: true },
-  { id: '17', name: 'Other Income', type: 'income', color: '#6B7280', icon: 'MoreHorizontal', scopes: ['family'], isDefault: true },
+  { id: '12', name: 'Salary', type: 'income', color: '#4facfe', icon: 'Briefcase', scopes: ['personal', 'family'], isDefault: true },
+  { id: '13', name: 'Freelance', type: 'income', color: '#2563EB', icon: 'Laptop', scopes: ['personal', 'family'], isDefault: true },
+  { id: '14', name: 'Investment', type: 'income', color: '#1D4ED8', icon: 'TrendingUp', scopes: ['personal', 'family'], isDefault: true },
+  { id: '15', name: 'Business', type: 'income', color: '#059669', icon: 'Building', scopes: ['personal', 'family'], isDefault: true },
+  { id: '16', name: 'Bonus', type: 'income', color: '#DC2626', icon: 'Gift', scopes: ['personal', 'family'], isDefault: true },
+  { id: '17', name: 'Other Income', type: 'income', color: '#6B7280', icon: 'MoreHorizontal', scopes: ['personal', 'family'], isDefault: true },
 ];
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -210,10 +210,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       if (categoriesData) {
         const savedCategories = JSON.parse(categoriesData);
-        // Migrate all existing categories to use family scope
+        // Migrate existing categories to ensure they have proper scopes
         const migratedCategories = savedCategories.map((cat: any) => ({
           ...cat,
-          scopes: ['family'], // Force all categories to use family scope
+          scopes: cat.scopes || ['family'], // Keep existing scopes or default to family
           isDefault: cat.isDefault || false, // Ensure isDefault is set
         }));
         
@@ -276,7 +276,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const category: Category = {
       ...categoryData,
       id: Date.now().toString() + Math.random().toString(36).substring(2),
-      scopes: ['family'], // Always default to family scope
+      scopes: categoryData.scopes || ['family'], // Use provided scopes or default to family
       isDefault: false, // User-created categories are never default
     };
 
@@ -292,10 +292,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       throw new Error('Default categories cannot be modified');
     }
     
-    // Ensure category always has family scope
+    // Keep existing scopes for user categories
     const updatedCategory = {
       ...category,
-      scopes: ['family'],
       isDefault: false, // Ensure user categories remain non-default
     };
     
@@ -394,22 +393,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'HIDE_TOAST' });
   };
 
-  // Unified category retrieval - all categories are now family scoped
-  const getCategories = (type?: 'expense' | 'income') => {
-    let categories = state.categories; // All categories are family scoped now
+  // Enhanced category retrieval with scope filtering
+  const getCategories = (type?: 'expense' | 'income', scope?: 'personal' | 'family') => {
+    let categories = state.categories;
+    
+    // Filter by scope if provided
+    if (scope) {
+      categories = categories.filter(c => c.scopes.includes(scope));
+    }
+    
+    // Filter by type if provided
     if (type) {
       categories = categories.filter(c => c.type === type);
     }
+    
     return categories;
   };
 
-  // Legacy methods for backward compatibility - now just call getCategories
+  // Specific methods for personal and family categories
   const getPersonalCategories = (type?: 'expense' | 'income') => {
-    return getCategories(type);
+    return getCategories(type, 'personal');
   };
 
   const getFamilyCategories = (type?: 'expense' | 'income') => {
-    return getCategories(type);
+    return getCategories(type, 'family');
   };
 
   const deleteCategory = async (id: string) => {

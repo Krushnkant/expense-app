@@ -38,8 +38,8 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
   const [categoryError, setCategoryError] = useState('');
 
   const isEditing = !!transaction;
-  // Use unified categories - all are family scoped now
-  const categories = getCategories(type);
+  // Get personal categories for transactions (personal budget tracking)
+  const categories = getPersonalCategories(type);
 
   // Pre-fill form when editing
   useEffect(() => {

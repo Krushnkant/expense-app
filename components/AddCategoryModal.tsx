@@ -41,6 +41,7 @@ export default function AddCategoryModal({ visible, onClose }: AddCategoryModalP
 
   const [name, setName] = useState('');
   const [type, setType] = useState<'expense' | 'income'>('expense');
+  const [selectedScope, setSelectedScope] = useState<'personal' | 'family'>('family');
   const [selectedColor, setSelectedColor] = useState(availableColors[0]);
   const [selectedIcon, setSelectedIcon] = useState(availableIcons[0]);
   
@@ -50,6 +51,7 @@ export default function AddCategoryModal({ visible, onClose }: AddCategoryModalP
   const resetForm = () => {
     setName('');
     setType('expense');
+    setSelectedScope('family');
     setSelectedColor(availableColors[0]);
     setSelectedIcon(availableIcons[0]);
     setNameError('');
@@ -75,7 +77,7 @@ export default function AddCategoryModal({ visible, onClose }: AddCategoryModalP
         type,
         color: selectedColor,
         icon: selectedIcon,
-        scopes: ['family'], // All categories are family scoped
+        scopes: [selectedScope],
       });
 
       showToast({
@@ -157,6 +159,35 @@ export default function AddCategoryModal({ visible, onClose }: AddCategoryModalP
             </View>
           </View>
 
+          {/* Scope Selection */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Category Scope</Text>
+            <View style={styles.typeContainer}>
+              <TouchableOpacity
+                style={[styles.typeButton, selectedScope === 'personal' && styles.typeButtonActive]}
+                onPress={() => setSelectedScope('personal')}
+              >
+                <Text style={[styles.typeButtonText, selectedScope === 'personal' && styles.typeButtonTextActive]}>
+                  Personal
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.typeButton, selectedScope === 'family' && styles.typeButtonActive]}
+                onPress={() => setSelectedScope('family')}
+              >
+                <Text style={[styles.typeButtonText, selectedScope === 'family' && styles.typeButtonTextActive]}>
+                  Family
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.helperText}>
+              {selectedScope === 'personal' 
+                ? 'Personal categories are only visible to you' 
+                : 'Family categories are shared with family members'
+              }
+            </Text>
+          </View>
+
           {/* Color Selection */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Color</Text>
@@ -219,7 +250,7 @@ export default function AddCategoryModal({ visible, onClose }: AddCategoryModalP
               </View>
               <View style={styles.previewDetails}>
                 <Text style={styles.previewName}>{name || 'Category Name'}</Text>
-                <Text style={styles.previewType}>{type}</Text>
+                <Text style={styles.previewType}>{type} • {selectedScope}</Text>
               </View>
             </View>
           </View>
@@ -286,6 +317,11 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: '#EF4444',
     marginTop: 8,
     fontWeight: '500',
+  },
+  helperText: {
+    fontSize: 14,
+    color: colors.textTertiary,
+    marginTop: 8,
   },
   typeContainer: {
     flexDirection: 'row',

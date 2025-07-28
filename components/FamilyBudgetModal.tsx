@@ -21,7 +21,7 @@ interface FamilyBudgetModalProps {
 }
 
 export default function FamilyBudgetModal({ visible, onClose, budget, onSave }: FamilyBudgetModalProps) {
-  const { showToast, getCategories, addCategory, state } = useApp();
+  const { showToast, getFamilyCategories, addCategory, state } = useApp();
   const [monthlyBudget, setMonthlyBudget] = useState(budget.monthly.toString());
   const [categories, setCategories] = useState<FamilyBudgetCategory[]>(budget.categories);
   
@@ -30,8 +30,8 @@ export default function FamilyBudgetModal({ visible, onClose, budget, onSave }: 
   const [categoryError, setCategoryError] = useState('');
   const [budgetError, setBudgetError] = useState('');
 
-  // Get available categories from the unified system (all are family scoped now)
-  const availableCategories = getCategories('expense');
+  // Get available family categories for family budget
+  const availableCategories = getFamilyCategories('expense');
   const userCurrency = state.user?.currency || 'INR';
 
   // Update local state when budget prop changes
@@ -144,6 +144,7 @@ export default function FamilyBudgetModal({ visible, onClose, budget, onSave }: 
       type: 'expense' as const,
       color: '#6B7280',
       icon: 'circle',
+      scopes: ['family' as const],
     };
 
     try {
@@ -385,7 +386,7 @@ export default function FamilyBudgetModal({ visible, onClose, budget, onSave }: 
           <View style={styles.tipsCard}>
             <Text style={styles.tipsTitle}>💡 Budget Tips</Text>
             <Text style={styles.tipsText}>
-              • All categories are shared across the app{'\n'}
+              • Family categories are shared with family members{'\n'}
               • Set realistic budgets for each category{'\n'}
               • Review spending regularly with family members{'\n'}
               • Adjust budgets monthly based on actual spending{'\n'}
