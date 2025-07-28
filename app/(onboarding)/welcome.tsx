@@ -153,7 +153,7 @@ export default function Welcome() {
             const IconComponent = feature.icon;
             return (
               <View key={index} style={styles.featureCard}>
-                <View style={[styles.featureIcon, { backgroundColor: feature.color + '20' }]}>
+                <View style={[styles.featureIcon]}>
                   <IconComponent size={28} color={feature.color} />
                 </View>
                 <View style={styles.featureContent}>
@@ -203,7 +203,7 @@ export default function Welcome() {
           </LinearGradient>
         </TouchableOpacity>
         
-        <Text style={styles.freeText}>No credit card needed to get Started</Text>
+        <Text style={styles.freeText}>No credit card needed to get started</Text>
       </Animated.View>
     </SafeAreaView>
   );
@@ -270,15 +270,15 @@ const styles = StyleSheet.create({
   featureCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.20)',
+    padding: 24,
     borderRadius: 20,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 12,
-    elevation: 4,
+    elevation: 0,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
   },
@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    backgroundColor: '#e7f0fd'
   },
   featureContent: {
     flex: 1,
