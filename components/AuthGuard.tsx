@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGuest } from '@/contexts/GuestContext';
-import RegistrationPromptModal from './RegistrationPromptModal';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -11,7 +10,6 @@ interface AuthGuardProps {
 export default function AuthGuard({ children }: AuthGuardProps) {
   const { state: authState } = useAuth();
   const { state: guestState, incrementAppOpenCount } = useGuest();
-  const [showRegistrationPrompt, setShowRegistrationPrompt] = useState(false);
 
   useEffect(() => {
     // Increment app open count for guest users
@@ -19,13 +17,6 @@ export default function AuthGuard({ children }: AuthGuardProps) {
       incrementAppOpenCount();
     }
   }, []);
-
-  useEffect(() => {
-    // Show registration prompt when conditions are met
-    if (guestState.shouldShowRegistrationPrompt && !authState.isAuthenticated) {
-      setShowRegistrationPrompt(true);
-    }
-  }, [guestState.shouldShowRegistrationPrompt]);
 
   if (authState.isLoading) {
     return (
@@ -36,15 +27,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
-  // Always render children (main app content) and registration prompt modal
+  // Always render children (main app content)
   return (
-    <>
-      {children}
-      <RegistrationPromptModal
-        visible={showRegistrationPrompt}
-        onClose={() => setShowRegistrationPrompt(false)}
-      />
-    </>
+    children
   );
 }
 

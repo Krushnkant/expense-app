@@ -203,7 +203,7 @@ export default function Welcome() {
           </LinearGradient>
         </TouchableOpacity>
         
-        <Text style={styles.freeText}>Free forever • No credit card required</Text>
+        <Text style={styles.freeText}>No credit card needed to get Started</Text>
       </Animated.View>
     </SafeAreaView>
   );

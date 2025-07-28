@@ -451,6 +451,13 @@ export default function Profile() {
           <Text style={styles.sectionTitle}>Settings</Text>
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuItem} onPress={() => {
+              router.push('/(tabs)/notifications');
+            }}>
+              <Bell size={20} color={colors.textTertiary} />
+              <Text style={styles.menuItemText}>Notifications</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.menuItem} onPress={() => {
               router.push('/(tabs)/categories');
             }}>
               <Tag size={20} color={colors.textTertiary} />
@@ -462,11 +469,6 @@ export default function Profile() {
             }}>
               <CreditCard size={20} color={colors.textTertiary} />
               <Text style={styles.menuItemText}>Subscription</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.menuItem}>
-              <Bell size={20} color={colors.textTertiary} />
-              <Text style={styles.menuItemText}>Notifications</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.menuItem}>

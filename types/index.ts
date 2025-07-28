@@ -195,3 +195,25 @@ export interface Toast {
   message: string;
   duration?: number;
 }
+
+// Notification types
+export interface Notification {
+  id: string;
+  type: 'invitation' | 'subscription' | 'payment' | 'budget' | 'reminder' | 'system';
+  title: string;
+  message: string;
+  timestamp: string;
+  isRead: boolean;
+  data?: {
+    familyGroupId?: string;
+    familyGroupName?: string;
+    invitedBy?: string;
+    subscriptionPlan?: string;
+    amount?: number;
+    currency?: string;
+    budgetCategory?: string;
+    budgetLimit?: number;
+    actionRequired?: boolean;
+  };
+  status?: 'pending' | 'accepted' | 'rejected' | 'expired';
+}
