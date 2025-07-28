@@ -194,7 +194,7 @@ export default function Splash() {
 
       {/* Bottom Branding */}
       <View style={styles.bottomBranding}>
-        <Text style={styles.brandingText}>Powered by React Native & Expo</Text>
+        <Text style={styles.brandingText}>Powered by DigiLance Infotech</Text>
       </View>
     </SafeAreaView>
   );
