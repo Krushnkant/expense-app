@@ -413,7 +413,7 @@ export default function Notifications() {
           onPress={() => setSelectedTab('pending')}
         >
           <Text style={[styles.tabText, selectedTab === 'pending' && styles.activeTabText]}>
-            Pending Invitations
+            Invitations
           </Text>
           {pendingCount > 0 && (
             <View style={styles.tabBadge}>
@@ -426,7 +426,7 @@ export default function Notifications() {
           onPress={() => setSelectedTab('all')}
         >
           <Text style={[styles.tabText, selectedTab === 'all' && styles.activeTabText]}>
-            All Notifications
+            Notifications
           </Text>
           {selectedTab === 'all' && unreadCount > 0 && (
             <View style={styles.tabBadge}>
