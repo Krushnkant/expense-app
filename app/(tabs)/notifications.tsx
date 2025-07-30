@@ -407,13 +407,14 @@ export default function Notifications() {
       </View>
 
       {/* Tab Navigation */}
+      <View style={styles.tabSpacing} />
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, selectedTab === 'pending' && styles.activeTab]}
           onPress={() => setSelectedTab('pending')}
         >
           <Text style={[styles.tabText, selectedTab === 'pending' && styles.activeTabText]}>
-            Invitations
+            Action Required
           </Text>
           {pendingCount > 0 && (
             <View style={styles.tabBadge}>
@@ -426,7 +427,7 @@ export default function Notifications() {
           onPress={() => setSelectedTab('all')}
         >
           <Text style={[styles.tabText, selectedTab === 'all' && styles.activeTabText]}>
-            Notifications
+            All Activity
           </Text>
           {selectedTab === 'all' && unreadCount > 0 && (
             <View style={styles.tabBadge}>
@@ -446,17 +447,17 @@ export default function Notifications() {
               {selectedTab === 'pending' ? (
                 <>
                   <Users size={48} color={colors.textTertiary} />
-                  <Text style={styles.emptyStateText}>No pending invitations</Text>
+                  <Text style={styles.emptyStateText}>No actions required</Text>
                   <Text style={styles.emptyStateSubtext}>
-                    Family budget invitations will appear here
+                    Items requiring your attention will appear here
                   </Text>
                 </>
               ) : (
                 <>
                   <Bell size={48} color={colors.textTertiary} />
-                  <Text style={styles.emptyStateText}>No notifications yet</Text>
+                  <Text style={styles.emptyStateText}>No activity yet</Text>
                   <Text style={styles.emptyStateSubtext}>
-                    You'll see important updates and alerts here
+                    All your notifications and updates will appear here
                   </Text>
                 </>
               )}
@@ -529,6 +530,10 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  tabSpacing: {
+    height: 16,
+    backgroundColor: colors.background,
   },
   tabContainer: {
     flexDirection: 'row',
