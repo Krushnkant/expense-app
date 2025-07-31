@@ -432,11 +432,6 @@ export default function Notifications() {
           <Text style={[styles.tabText, selectedTab === 'all' && styles.activeTabText]}>
             All Activity
           </Text>
-          {selectedTab === 'all' && unreadCount > 0 && (
-            <View style={styles.tabBadge}>
-              <Text style={styles.tabBadgeText}>{unreadCount}</Text>
-            </View>
-          )}
         </TouchableOpacity>
       </View>
 
