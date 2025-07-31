@@ -292,7 +292,10 @@ export default function Notifications() {
 
   // Filter notifications based on selected tab
   const pendingInvitations = notifications.filter(n => n.type === 'invitation' && n.status === 'pending');
-  const allNotifications = notifications;
+  const allNotifications = notifications.filter(n => 
+    !(n.type === 'invitation' && n.status === 'pending') && 
+    !n.data?.actionRequired
+  );
   const displayedNotifications = selectedTab === 'pending' ? pendingInvitations : allNotifications;
   
   const unreadCount = notifications.filter(n => !n.isRead).length;
