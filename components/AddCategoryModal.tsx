@@ -302,8 +302,8 @@ const createStyles = (colors: any) => StyleSheet.create({
   input: {
     fontSize: 16,
     color: colors.text,
-    backgroundColor: colors.surface,
-    padding: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.border,
