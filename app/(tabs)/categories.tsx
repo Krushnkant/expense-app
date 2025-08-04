@@ -139,56 +139,81 @@ export default function Categories() {
         </TouchableOpacity>
       </View>
 
-      {/* Scope Filter */}
-      <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={[styles.filterButton, selectedScope === 'personal' && styles.filterButtonActive]}
-          onPress={() => setSelectedScope('personal')}
-        >
-          <Text style={[
-            styles.filterButtonText,
-            selectedScope === 'personal' && styles.filterButtonTextActive
-          ]}>
-            Personal Categories
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filterButton, selectedScope === 'family' && styles.filterButtonActive]}
-          onPress={() => setSelectedScope('family')}
-        >
-          <Text style={[
-            styles.filterButtonText,
-            selectedScope === 'family' && styles.filterButtonTextActive
-          ]}>
-            Family Categories
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {/* Combined Filter Section */}
+      <View style={styles.filtersSection}>
+        {/* Scope Selector */}
+        <View style={styles.filterGroup}>
+          <Text style={styles.filterGroupLabel}>Scope</Text>
+          <View style={styles.segmentedControl}>
+            <TouchableOpacity
+              style={[
+                styles.segmentButton,
+                styles.segmentButtonLeft,
+                selectedScope === 'personal' && styles.segmentButtonActive
+              ]}
+              onPress={() => setSelectedScope('personal')}
+            >
+              <Text style={[
+                styles.segmentButtonText,
+                selectedScope === 'personal' && styles.segmentButtonTextActive
+              ]}>
+                Personal
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.segmentButton,
+                styles.segmentButtonRight,
+                selectedScope === 'family' && styles.segmentButtonActive
+              ]}
+              onPress={() => setSelectedScope('family')}
+            >
+              <Text style={[
+                styles.segmentButtonText,
+                selectedScope === 'family' && styles.segmentButtonTextActive
+              ]}>
+                Family
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
-      {/* Type Filter */}
-      <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={[styles.filterButton, selectedType === 'expense' && styles.filterButtonActive]}
-          onPress={() => setSelectedType('expense')}
-        >
-          <Text style={[
-            styles.filterButtonText,
-            selectedType === 'expense' && styles.filterButtonTextActive
-          ]}>
-            Expenses ({getCurrentCount()})
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.filterButton, selectedType === 'income' && styles.filterButtonActive]}
-          onPress={() => setSelectedType('income')}
-        >
-          <Text style={[
-            styles.filterButtonText,
-            selectedType === 'income' && styles.filterButtonTextActive
-          ]}>
-            Income ({getCurrentCount()})
-          </Text>
-        </TouchableOpacity>
+        {/* Type Selector */}
+        <View style={styles.filterGroup}>
+          <Text style={styles.filterGroupLabel}>Type</Text>
+          <View style={styles.segmentedControl}>
+            <TouchableOpacity
+              style={[
+                styles.segmentButton,
+                styles.segmentButtonLeft,
+                selectedType === 'expense' && styles.segmentButtonActive
+              ]}
+              onPress={() => setSelectedType('expense')}
+            >
+              <Text style={[
+                styles.segmentButtonText,
+                selectedType === 'expense' && styles.segmentButtonTextActive
+              ]}>
+                Expenses ({getCurrentCount()})
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.segmentButton,
+                styles.segmentButtonRight,
+                selectedType === 'income' && styles.segmentButtonActive
+              ]}
+              onPress={() => setSelectedType('income')}
+            >
+              <Text style={[
+                styles.segmentButtonText,
+                selectedType === 'income' && styles.segmentButtonTextActive
+              ]}>
+                Income ({getCurrentCount()})
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -306,29 +331,56 @@ const createStyles = (colors: any) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  filterContainer: {
-    flexDirection: 'row',
-    padding: 20,
-    gap: 12,
+  filtersSection: {
     backgroundColor: colors.surface,
+    padding: 20,
+    paddingTop: 0,
+    paddingBottom: 24,
   },
-  filterButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+  filterGroup: {
+    marginBottom: 20,
+  },
+  filterGroupLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.textSecondary,
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  segmentedControl: {
+    flexDirection: 'row',
     backgroundColor: colors.borderLight,
+    borderRadius: 12,
+    padding: 2,
+  },
+  segmentButton: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
   },
-  filterButtonActive: {
+  segmentButtonLeft: {
+    marginRight: 1,
+  },
+  segmentButtonRight: {
+    marginLeft: 1,
+  },
+  segmentButtonActive: {
     backgroundColor: '#4facfe',
+    shadowColor: '#4facfe',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  filterButtonText: {
+  segmentButtonText: {
     fontSize: 14,
     fontWeight: '600',
     color: colors.textTertiary,
   },
-  filterButtonTextActive: {
+  segmentButtonTextActive: {
     color: '#FFFFFF',
   },
   scrollView: {
