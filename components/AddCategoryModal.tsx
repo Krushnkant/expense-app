@@ -302,8 +302,8 @@ const createStyles = (colors: any) => StyleSheet.create({
   input: {
     fontSize: 16,
     color: colors.text,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    backgroundColor: colors.surface,
+    padding: 16,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.border,
@@ -328,8 +328,9 @@ const createStyles = (colors: any) => StyleSheet.create({
     gap: 12,
   },
   typeButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16
     borderRadius: 12,
     backgroundColor: colors.surface,
     borderWidth: 2,
@@ -341,7 +342,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: '#4facfe',
   },
   typeButtonText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
     color: colors.textSecondary,
   },
