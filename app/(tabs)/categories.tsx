@@ -11,6 +11,8 @@ import { ArrowLeft, Plus, Lock, CreditCard as Edit3, Trash2 } from 'lucide-react
 import * as Icons from 'lucide-react-native';
 import { router } from 'expo-router';
 import AddCategoryModal from '@/components/AddCategoryModal';
+import BottomSheet, { BottomSheetAction } from '@/components/BottomSheet';
+import CustomAlert from '@/components/CustomAlert';
 import { useApp } from '@/contexts/AppContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Category } from '@/types';
@@ -21,6 +23,10 @@ export default function Categories() {
   const [selectedType, setSelectedType] = useState<'expense' | 'income'>('expense');
   const [selectedScope, setSelectedScope] = useState<'personal' | 'family'>('family');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [showActionSheet, setShowActionSheet] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
   const { colors } = themeState.theme;
   const styles = createStyles(colors);
@@ -49,33 +55,38 @@ export default function Categories() {
     }
   };
 
-  const handleEditCategory = (category: Category) => {
+  const handleCategoryPress = (category: Category) => {
     if (category.isDefault) {
       showToast({
         type: 'warning',
-        message: 'Default categories cannot be edited',
+        message: 'Default categories cannot be modified',
       });
       return;
     }
     
-    // TODO: Navigate to edit category modal
+    setSelectedCategory(category);
+    setShowActionSheet(true);
+  };
+
+  const handleEditCategory = (category: Category) => {
+    // TODO: Implement edit category functionality
     showToast({
       type: 'info',
       message: 'Edit category functionality coming soon!',
     });
+    setShowActionSheet(false);
   };
 
   const handleDeleteCategory = async (category: Category) => {
-    if (category.isDefault) {
-      showToast({
-        type: 'warning',
-        message: 'Default categories cannot be deleted',
-      });
-      return;
-    }
+    setCategoryToDelete(category);
+    setShowDeleteConfirm(true);
+    setShowActionSheet(false);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!categoryToDelete) return;
     try {
-      await deleteCategory(category.id);
+      await deleteCategory(categoryToDelete.id);
       showToast({
         type: 'success',
         message: 'Category deleted successfully!',
@@ -85,7 +96,20 @@ export default function Categories() {
         type: 'error',
         message: 'Failed to delete category. Please try again.',
       });
+    } finally {
+      setShowDeleteConfirm(false);
+      setCategoryToDelete(null);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setCategoryToDelete(null);
+  };
+
+  const handleCloseActionSheet = () => {
+    setShowActionSheet(false);
+    setSelectedCategory(null);
   };
 
   const handleAddCategory = () => {
@@ -96,7 +120,12 @@ export default function Categories() {
     const IconComponent = (Icons as any)[category.icon] || Icons.Circle;
     
     return (
-      <View key={category.id} style={styles.categoryItem}>
+      <TouchableOpacity 
+        key={category.id} 
+        style={styles.categoryItem}
+        onPress={() => handleCategoryPress(category)}
+        activeOpacity={0.7}
+      >
         <View style={styles.categoryInfo}>
           <View style={[styles.categoryIcon, { backgroundColor: category.color + '20' }]}>
             <IconComponent size={24} color={category.color} />
@@ -116,9 +145,34 @@ export default function Categories() {
             </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
+
+  const actionSheetActions: BottomSheetAction[] = [
+    {
+      id: 'edit',
+      title: 'Edit Category',
+      icon: Edit3,
+      color: '#4facfe',
+      onPress: () => {
+        if (selectedCategory) {
+          handleEditCategory(selectedCategory);
+        }
+      },
+    },
+    {
+      id: 'delete',
+      title: 'Delete Category',
+      icon: Trash2,
+      color: '#EF4444',
+      onPress: () => {
+        if (selectedCategory) {
+          handleDeleteCategory(selectedCategory);
+        }
+      },
+    },
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -241,7 +295,12 @@ export default function Categories() {
           
           {userCategories.length > 0 ? (
             userCategories.map(category => (
-              <View key={category.id} style={styles.categoryItem}>
+              <TouchableOpacity 
+                key={category.id} 
+                style={styles.categoryItem}
+                onPress={() => handleCategoryPress(category)}
+                activeOpacity={0.7}
+              >
                 <View style={styles.categoryInfo}>
                   <View style={[styles.categoryIcon, { backgroundColor: category.color + '20' }]}>
                     {React.createElement((Icons as any)[category.icon] || Icons.Circle, {
@@ -258,22 +317,7 @@ export default function Categories() {
                     </Text>
                   </View>
                 </View>
-                
-                <View style={styles.categoryActions}>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleEditCategory(category)}
-                  >
-                    <Edit3 size={16} color="#4facfe" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleDeleteCategory(category)}
-                  >
-                    <Trash2 size={16} color="#EF4444" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
             <View style={styles.emptyState}>
@@ -291,6 +335,24 @@ export default function Categories() {
       <AddCategoryModal
         visible={showAddModal}
         onClose={() => setShowAddModal(false)}
+      />
+
+      <BottomSheet
+        visible={showActionSheet}
+        onClose={handleCloseActionSheet}
+        title="Category Actions"
+        actions={actionSheetActions}
+      />
+
+      <CustomAlert
+        visible={showDeleteConfirm}
+        type="warning"
+        title="Delete Category"
+        message={`Are you sure you want to delete "${categoryToDelete?.name}"? This action cannot be undone.`}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
       />
     </SafeAreaView>
   );
@@ -461,18 +523,6 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 14,
     color: colors.textTertiary,
     textTransform: 'capitalize',
-  },
-  categoryActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.borderLight,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   emptyState: {
     alignItems: 'center',
