@@ -23,9 +23,10 @@ interface AddTransactionModalProps {
 }
 
 export default function AddTransactionModal({ visible, onClose, transaction }: AddTransactionModalProps) {
-  const { addTransaction, updateTransaction, showToast, getCategories, getPersonalCategories } = useApp();
+  const { addTransaction, updateTransaction, showToast, getCategories, getPersonalCategories, getFamilyCategories } = useApp();
   const { incrementTransactionCount } = useGuest();
   const [type, setType] = useState<'expense' | 'income'>('expense');
+  const [scope, setScope] = useState<'personal' | 'family'>('personal');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -38,13 +39,15 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
   const [categoryError, setCategoryError] = useState('');
 
   const isEditing = !!transaction;
-  // Get personal categories for transactions (personal budget tracking)
-  const categories = getPersonalCategories(type);
+  // Get categories based on selected scope
+  const categories = scope === 'personal' ? getPersonalCategories(type) : getFamilyCategories(type);
 
   // Pre-fill form when editing
   useEffect(() => {
     if (transaction && visible) {
       setType(transaction.type);
+      // For existing transactions, default to personal scope since we don't have scope data
+      setScope('personal');
       setAmount(transaction.amount.toString());
       setDescription(transaction.description);
       setSelectedCategory(transaction.category);
@@ -55,15 +58,16 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
     }
   }, [transaction, visible]);
 
-  // Reset category when type changes and not editing
+  // Reset category when type or scope changes and not editing
   useEffect(() => {
     if (!isEditing) {
       setSelectedCategory('');
     }
-  }, [type, isEditing]);
+  }, [type, scope, isEditing]);
 
   const resetForm = () => {
     setType('expense');
+    setScope('personal');
     setAmount('');
     setDescription('');
     setSelectedCategory('');
@@ -80,6 +84,12 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
     }
   };
 
+  const handleScopeChange = (newScope: 'personal' | 'family') => {
+    setScope(newScope);
+    if (!isEditing) {
+      setSelectedCategory(''); // Reset category when scope changes for new transactions
+    }
+  };
   const formatDateForDisplay = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -271,6 +281,34 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
             </View>
           </View>
 
+          {/* Scope Selection */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Scope</Text>
+            <View style={styles.typeContainer}>
+              <TouchableOpacity
+                style={[styles.typeButton, scope === 'personal' && styles.typeButtonActive]}
+                onPress={() => handleScopeChange('personal')}
+              >
+                <Text style={[styles.typeButtonText, scope === 'personal' && styles.typeButtonTextActive]}>
+                  Personal
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.typeButton, scope === 'family' && styles.typeButtonActive]}
+                onPress={() => handleScopeChange('family')}
+              >
+                <Text style={[styles.typeButtonText, scope === 'family' && styles.typeButtonTextActive]}>
+                  Family
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.helperText}>
+              {scope === 'personal' 
+                ? 'Personal transactions are only visible to you and count towards your personal budget' 
+                : 'Family transactions are shared with family members and count towards the family budget'
+              }
+            </Text>
+          </View>
           {/* Amount */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Amount *</Text>
@@ -318,7 +356,12 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
 
           {/* Category Selection */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Category *</Text>
+            <View style={styles.categoryHeader}>
+              <Text style={styles.sectionTitle}>Category *</Text>
+              <Text style={styles.categoryScopeIndicator}>
+                {scope === 'personal' ? 'Personal Categories' : 'Family Categories'}
+              </Text>
+            </View>
             {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
             
             {/* Selected Category Display */}
@@ -390,10 +433,10 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
             {categories.length === 0 && (
               <View style={styles.noCategoriesContainer}>
                 <Text style={styles.noCategoriesText}>
-                  No {type} categories available.
+                  No {scope} {type} categories available.
                 </Text>
                 <Text style={styles.noCategoriesSubtext}>
-                  Categories can be managed in the settings.
+                  Switch to {scope === 'personal' ? 'family' : 'personal'} scope or manage categories in settings.
                 </Text>
               </View>
             )}
@@ -455,6 +498,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#374151',
     marginBottom: 12,
+  },
+  helperText: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 8,
+    lineHeight: 20,
+  },
+  categoryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  categoryScopeIndicator: {
+    fontSize: 12,
+    color: '#4facfe',
+    fontWeight: '600',
+    backgroundColor: '#EFF6FF',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   typeContainer: {
     flexDirection: 'row',
