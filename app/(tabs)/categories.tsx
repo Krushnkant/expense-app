@@ -335,10 +335,10 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.surface,
     padding: 20,
     paddingTop: 0,
-    paddingBottom: 24,
+    paddingBottom: 16,
   },
   filterGroup: {
-    marginBottom: 20,
+    marginBottom: 12,
   },
   filterGroupLabel: {
     fontSize: 14,
