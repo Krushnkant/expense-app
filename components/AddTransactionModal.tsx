@@ -282,7 +282,7 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
           </View>
 
           {/* Scope Selection */}
-          <View style={[styles.section, styles.scopeSection]}>
+          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Scope</Text>
             <View style={styles.typeContainer}>
               <TouchableOpacity
@@ -504,18 +504,6 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginTop: 8,
     lineHeight: 20,
-  },
-  scopeSection: {
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
   },
   categoryHeader: {
     flexDirection: 'row',
