@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     backgroundColor: '#EFF6FF',
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 2,
     borderRadius: 8,
   },
   typeContainer: {
