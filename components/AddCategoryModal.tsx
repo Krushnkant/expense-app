@@ -330,7 +330,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   typeButton: {
     flex: 1,
     paddingVertical: 12,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
     borderRadius: 12,
     backgroundColor: colors.surface,
     borderWidth: 2,
