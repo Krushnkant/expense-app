@@ -334,11 +334,12 @@ const createStyles = (colors: any) => StyleSheet.create({
   filtersSection: {
     backgroundColor: colors.surface,
     padding: 20,
-    paddingTop: 0,
+    paddingTop: 10,
     paddingBottom: 16,
   },
   filterGroup: {
-    marginBottom: 16,
+    marginTop: 4,
+    marginBottom: 8,
   },
   filterGroupLabel: {
     fontSize: 14,
