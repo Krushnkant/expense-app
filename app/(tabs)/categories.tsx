@@ -338,7 +338,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     paddingBottom: 16,
   },
   filterGroup: {
-    marginBottom: 0,
+    marginBottom: 16,
   },
   filterGroupLabel: {
     fontSize: 14,
