@@ -328,8 +328,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     gap: 12,
   },
   typeButton: {
-    flex: 1,
-    padding: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 12,
     backgroundColor: colors.surface,
     borderWidth: 2,
@@ -341,7 +341,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: '#4facfe',
   },
   typeButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: colors.textSecondary,
   },
