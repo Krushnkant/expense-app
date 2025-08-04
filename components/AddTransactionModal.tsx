@@ -282,7 +282,7 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
           </View>
 
           {/* Scope Selection */}
-          <View style={styles.section}>
+          <View style={[styles.section, styles.scopeSection]}>
             <Text style={styles.sectionTitle}>Scope</Text>
             <View style={styles.typeContainer}>
               <TouchableOpacity
@@ -304,8 +304,8 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
             </View>
             <Text style={styles.helperText}>
               {scope === 'personal' 
-                ? 'Personal transactions are only visible to you and count towards your personal budget' 
-                : 'Family transactions are shared with family members and count towards the family budget'
+                ? `Personal ${type}s are only visible to you and count towards your personal budget` 
+                : `Family ${type}s are shared with family members and count towards the family budget`
               }
             </Text>
           </View>
@@ -504,6 +504,18 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginTop: 8,
     lineHeight: 20,
+  },
+  scopeSection: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   categoryHeader: {
     flexDirection: 'row',
