@@ -11,6 +11,7 @@ import { ArrowLeft, Plus, Lock, CreditCard as Edit3, Trash2 } from 'lucide-react
 import * as Icons from 'lucide-react-native';
 import { router } from 'expo-router';
 import AddCategoryModal from '@/components/AddCategoryModal';
+import EditCategoryModal from '@/components/EditCategoryModal';
 import BottomSheet, { BottomSheetAction } from '@/components/BottomSheet';
 import CustomAlert from '@/components/CustomAlert';
 import { useApp } from '@/contexts/AppContext';
@@ -23,6 +24,7 @@ export default function Categories() {
   const [selectedType, setSelectedType] = useState<'expense' | 'income'>('expense');
   const [selectedScope, setSelectedScope] = useState<'personal' | 'family'>('family');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [showActionSheet, setShowActionSheet] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -69,11 +71,8 @@ export default function Categories() {
   };
 
   const handleEditCategory = (category: Category) => {
-    // TODO: Implement edit category functionality
-    showToast({
-      type: 'info',
-      message: 'Edit category functionality coming soon!',
-    });
+    setSelectedCategory(category);
+    setShowEditModal(true);
     setShowActionSheet(false);
   };
 
@@ -109,6 +108,11 @@ export default function Categories() {
 
   const handleCloseActionSheet = () => {
     setShowActionSheet(false);
+    setSelectedCategory(null);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
     setSelectedCategory(null);
   };
 
@@ -335,6 +339,12 @@ export default function Categories() {
       <AddCategoryModal
         visible={showAddModal}
         onClose={() => setShowAddModal(false)}
+      />
+
+      <EditCategoryModal
+        visible={showEditModal}
+        onClose={handleCloseEditModal}
+        category={selectedCategory}
       />
 
       <BottomSheet
