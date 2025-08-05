@@ -5,6 +5,7 @@ export interface Transaction {
   category: string;
   description: string;
   date: string;
+  scope: 'personal' | 'family';
   createdAt: string;
   updatedAt: string;
 }

@@ -63,7 +63,20 @@ export default function TransactionItem({
         </View>
         <View style={styles.details}>
           <Text style={styles.description}>{transaction.description}</Text>
-          <Text style={styles.category}>{transaction.category}</Text>
+          <View style={styles.categoryRow}>
+            <Text style={styles.category}>{transaction.category}</Text>
+            <View style={[
+              styles.scopeBadge,
+              { backgroundColor: transaction.scope === 'personal' ? '#EFF6FF' : '#F0FDF4' }
+            ]}>
+              <Text style={[
+                styles.scopeText,
+                { color: transaction.scope === 'personal' ? '#1E40AF' : '#166534' }
+              ]}>
+                {transaction.scope === 'personal' ? 'Personal' : 'Family'}
+              </Text>
+            </View>
+          </View>
           <Text style={styles.date}>{formatDate(transaction.date)}</Text>
         </View>
       </View>
@@ -119,10 +132,25 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.text,
     marginBottom: 2,
   },
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
+    gap: 8,
+  },
   category: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: 2,
+    flex: 1,
+  },
+  scopeBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  scopeText: {
+    fontSize: 10,
+    fontWeight: '600',
   },
   date: {
     fontSize: 12,

@@ -164,6 +164,7 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
           ...transaction,
           amount: numAmount,
           type,
+          scope,
           category: selectedCategory,
           description: description.trim(),
           date,
@@ -180,6 +181,7 @@ export default function AddTransactionModal({ visible, onClose, transaction }: A
         addTransaction({
           amount: numAmount,
           type,
+          scope,
           category: selectedCategory,
           description: description.trim(),
           date,
