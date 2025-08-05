@@ -286,7 +286,7 @@ export default function Profile() {
                 {formatAmountWithSign(state.monthlyStats.netSavings, userCurrency)}
               </Text>
               <Text style={styles.statLabel}>
-                {state.monthlyStats.netSavings >= 0 ? 'Savings' : 'Deficit'}
+                {state.monthlyStats.netSavings >= 0 ? 'Savings' : 'Over Budget'}
               </Text>
             </View>
           </View>
