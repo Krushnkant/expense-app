@@ -286,7 +286,7 @@ export default function Profile() {
                 {formatAmountWithSign(state.monthlyStats.netSavings, userCurrency)}
               </Text>
               <Text style={styles.statLabel}>
-                {state.monthlyStats.netSavings >= 0 ? 'Savings' : 'Over Budget'}
+                {state.monthlyStats.netSavings >= 0 ? 'Personal Savings' : 'Over Personal Budget'}
               </Text>
             </View>
           </View>
@@ -297,7 +297,7 @@ export default function Profile() {
           <Text style={styles.sectionTitle}>Budget Settings</Text>
           <View style={styles.budgetCard}>
             <View style={styles.budgetHeader}>
-              <Text style={styles.budgetLabel}>Monthly Budget</Text>
+              <Text style={styles.budgetLabel}>Personal Monthly Budget</Text>
               {!editingBudget && (
                 <TouchableOpacity onPress={() => setEditingBudget(true)}>
                   <Pencil size={16} color={colors.textTertiary} />
@@ -343,7 +343,7 @@ export default function Profile() {
                 />
               </View>
               <Text style={styles.budgetProgressText}>
-                {state.monthlyStats.budgetUsed.toFixed(1)}% used this month
+                {state.monthlyStats.budgetUsed.toFixed(1)}% of personal budget used this month
               </Text>
             </View>
           </View>

@@ -342,21 +342,41 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return transactionDate.getMonth() === currentMonth && transactionDate.getFullYear() === currentYear;
     });
 
-    const totalIncome = currentMonthTransactions
+    // Separate personal and family transactions
+    const personalTransactions = currentMonthTransactions.filter(t => t.scope === 'personal');
+    const familyTransactions = currentMonthTransactions.filter(t => t.scope === 'family');
+
+    // Calculate personal stats
+    const personalIncome = personalTransactions
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
 
-    const totalExpenses = currentMonthTransactions
+    const personalExpenses = personalTransactions
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
 
+    // Calculate family stats
+    const familyIncome = familyTransactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const familyExpenses = familyTransactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    // Total stats (for overall view)
+    const totalIncome = personalIncome + familyIncome;
+    const totalExpenses = personalExpenses + familyExpenses;
     const netSavings = totalIncome - totalExpenses;
-    const budgetUsed = state.user ? (totalExpenses / state.user.monthlyBudget) * 100 : 0;
+
+    // Budget calculation - only use personal expenses against personal budget
+    const budgetUsed = state.user ? (personalExpenses / state.user.monthlyBudget) * 100 : 0;
+    const personalNetSavings = personalIncome - personalExpenses;
 
     const monthlyStats: MonthlyStats = {
       totalIncome,
       totalExpenses,
-      netSavings,
+      netSavings: personalNetSavings, // Show personal net savings for budget comparison
       budgetUsed,
       transactionCount: currentMonthTransactions.length,
     };
@@ -364,7 +384,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'SET_MONTHLY_STATS', payload: monthlyStats });
 
     // Calculate category stats
-    const expensesByCategory = currentMonthTransactions
+    const expensesByCategory = personalTransactions
       .filter(t => t.type === 'expense')
       .reduce((acc, t) => {
         acc[t.category] = (acc[t.category] || 0) + t.amount;
@@ -376,9 +396,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return {
         category,
         amount,
-        percentage: totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0,
+        percentage: personalExpenses > 0 ? (amount / personalExpenses) * 100 : 0,
         color: categoryInfo?.color || '#6B7280',
-        transactionCount: currentMonthTransactions.filter(t => t.category === category).length,
+        transactionCount: personalTransactions.filter(t => t.category === category).length,
       };
     }).sort((a, b) => b.amount - a.amount);
 

@@ -249,7 +249,7 @@ export default function Dashboard() {
           <StatCard
             title="Budget Used"
             value={`${state.monthlyStats.budgetUsed.toFixed(2)}%`}
-           subtitle={`${formatAmount(state.monthlyStats.totalExpenses, userCurrency)} of ${formatAmount(state.user?.monthlyBudget || 0, userCurrency)}`}
+           subtitle={`Personal expenses vs personal budget`}
             icon={PiggyBank}
             color={state.monthlyStats.budgetUsed > 80 ? '#EF4444' : '#4facfe'}
             backgroundColor={colors.surface}
