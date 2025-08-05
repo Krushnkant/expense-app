@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
   },
   typeButton: {
     flex: 1,
-    padding: 16,
+    padding: 10,
     borderRadius: 12,
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
