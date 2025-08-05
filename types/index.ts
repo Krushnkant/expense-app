@@ -190,13 +190,6 @@ export interface Toast {
   duration?: number;
 }
 
-// Toast types
-export interface Toast {
-  type: 'success' | 'error' | 'info' | 'warning';
-  message: string;
-  duration?: number;
-}
-
 // Notification types
 export interface Notification {
   id: string;
