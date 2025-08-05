@@ -384,7 +384,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'SET_MONTHLY_STATS', payload: monthlyStats });
 
     // Calculate category stats
-    const expensesByCategory = personalTransactions
+    const expensesByCategory = currentMonthTransactions
       .filter(t => t.type === 'expense')
       .reduce((acc, t) => {
         acc[t.category] = (acc[t.category] || 0) + t.amount;
@@ -396,9 +396,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return {
         category,
         amount,
-        percentage: personalExpenses > 0 ? (amount / personalExpenses) * 100 : 0,
+        percentage: totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0,
         color: categoryInfo?.color || '#6B7280',
-        transactionCount: personalTransactions.filter(t => t.category === category).length,
+        transactionCount: currentMonthTransactions.filter(t => t.category === category && t.type === 'expense').length,
       };
     }).sort((a, b) => b.amount - a.amount);
 
