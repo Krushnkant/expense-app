@@ -62,24 +62,10 @@ export default function TransactionItem({
           })}
         </View>
         <View style={styles.details}>
-          <View style={styles.descriptionHeader}>
-            <Text style={styles.description}>{transaction.description}</Text>
-            <View style={[
-              styles.scopeBadge,
-              { 
-                backgroundColor: transaction.scope === 'personal' ? '#4facfe20' : '#10B98120',
-                borderColor: transaction.scope === 'personal' ? '#4facfe' : '#10B981'
-              }
-            ]}>
-              <Text style={[
-                styles.scopeText,
-                { color: transaction.scope === 'personal' ? '#4facfe' : '#10B981' }
-              ]}>
-                {transaction.scope === 'personal' ? 'Personal' : 'Family'}
-              </Text>
-            </View>
-          </View>
-          <Text style={styles.category}>{transaction.category}</Text>
+          <Text style={styles.description}>{transaction.description}</Text>
+          <Text style={styles.category}>
+            {transaction.type} • {transaction.scope}
+          </Text>
           <Text style={styles.date}>{formatDate(transaction.date)}</Text>
         </View>
       </View>
@@ -129,35 +115,17 @@ const createStyles = (colors: any) => StyleSheet.create({
   details: {
     flex: 1,
   },
-  descriptionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 6,
-  },
   description: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.text,
-    flex: 1,
-    marginRight: 12,
+    marginBottom: 4,
   },
   category: {
     fontSize: 14,
     color: colors.textSecondary,
+    textTransform: 'capitalize',
     marginBottom: 4,
-  },
-  scopeBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignSelf: 'flex-start',
-  },
-  scopeText: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.3,
   },
   date: {
     fontSize: 12,
