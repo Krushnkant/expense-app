@@ -62,21 +62,24 @@ export default function TransactionItem({
           })}
         </View>
         <View style={styles.details}>
-          <Text style={styles.description}>{transaction.description}</Text>
-          <View style={styles.categoryRow}>
-            <Text style={styles.category}>{transaction.category}</Text>
+          <View style={styles.descriptionHeader}>
+            <Text style={styles.description}>{transaction.description}</Text>
             <View style={[
               styles.scopeBadge,
-              { backgroundColor: transaction.scope === 'personal' ? '#EFF6FF' : '#F0FDF4' }
+              { 
+                backgroundColor: transaction.scope === 'personal' ? '#4facfe20' : '#10B98120',
+                borderColor: transaction.scope === 'personal' ? '#4facfe' : '#10B981'
+              }
             ]}>
               <Text style={[
                 styles.scopeText,
-                { color: transaction.scope === 'personal' ? '#1E40AF' : '#166534' }
+                { color: transaction.scope === 'personal' ? '#4facfe' : '#10B981' }
               ]}>
                 {transaction.scope === 'personal' ? 'Personal' : 'Family'}
               </Text>
             </View>
           </View>
+          <Text style={styles.category}>{transaction.category}</Text>
           <Text style={styles.date}>{formatDate(transaction.date)}</Text>
         </View>
       </View>
@@ -126,31 +129,35 @@ const createStyles = (colors: any) => StyleSheet.create({
   details: {
     flex: 1,
   },
+  descriptionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
   description: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.text,
-    marginBottom: 2,
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 2,
-    gap: 8,
+    flex: 1,
+    marginRight: 12,
   },
   category: {
     fontSize: 14,
     color: colors.textSecondary,
-    flex: 1,
+    marginBottom: 4,
   },
   scopeBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
   },
   scopeText: {
-    fontSize: 10,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   date: {
     fontSize: 12,
