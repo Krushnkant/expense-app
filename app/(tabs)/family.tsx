@@ -57,7 +57,7 @@ export default function Family() {
   // Update category spending based on actual transactions and sync with global categories
   useEffect(() => {
     updateCategorySpending();
-  }, [state.categoryStats, state.categories]);
+  }, [state.familyCategoryStats, state.categories]);
 
   const loadFamilyGroup = async () => {
     try {
@@ -114,8 +114,8 @@ export default function Family() {
       // Find corresponding global category
       const globalCategory = familyCategories.find(gc => gc.id === budgetCategory.categoryId);
       
-      // Find spending from category stats
-      const categoryStats = state.categoryStats.find(stat => stat.category === budgetCategory.name);
+      // Find spending from family category stats (only family-scoped transactions)
+      const categoryStats = state.familyCategoryStats.find(stat => stat.category === budgetCategory.name);
       
       return {
         ...budgetCategory,
@@ -135,7 +135,7 @@ export default function Family() {
       categoryId: category.id,
       name: category.name,
       budget: 0,
-      spent: state.categoryStats.find(stat => stat.category === category.name)?.amount || 0,
+      spent: state.familyCategoryStats.find(stat => stat.category === category.name)?.amount || 0,
       color: category.color,
     }));
 

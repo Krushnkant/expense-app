@@ -11,6 +11,8 @@ interface AppState {
   isLoading: boolean;
   monthlyStats: MonthlyStats;
   categoryStats: CategoryStats[];
+  personalCategoryStats: CategoryStats[];
+  familyCategoryStats: CategoryStats[];
   currentToast: Toast | null;
 }
 
@@ -30,6 +32,8 @@ type AppAction =
   | { type: 'DELETE_EMI'; payload: string }
   | { type: 'SET_MONTHLY_STATS'; payload: MonthlyStats }
   | { type: 'SET_CATEGORY_STATS'; payload: CategoryStats[] }
+  | { type: 'SET_PERSONAL_CATEGORY_STATS'; payload: CategoryStats[] }
+  | { type: 'SET_FAMILY_CATEGORY_STATS'; payload: CategoryStats[] }
   | { type: 'SHOW_TOAST'; payload: Toast }
   | { type: 'HIDE_TOAST' };
 
@@ -47,6 +51,8 @@ const initialState: AppState = {
     transactionCount: 0,
   },
   categoryStats: [],
+  personalCategoryStats: [],
+  familyCategoryStats: [],
   currentToast: null,
 };
 
@@ -124,6 +130,10 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, monthlyStats: action.payload };
     case 'SET_CATEGORY_STATS':
       return { ...state, categoryStats: action.payload };
+    case 'SET_PERSONAL_CATEGORY_STATS':
+      return { ...state, personalCategoryStats: action.payload };
+    case 'SET_FAMILY_CATEGORY_STATS':
+      return { ...state, familyCategoryStats: action.payload };
     case 'SHOW_TOAST':
       return { ...state, currentToast: action.payload };
     case 'HIDE_TOAST':
@@ -383,15 +393,36 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     dispatch({ type: 'SET_MONTHLY_STATS', payload: monthlyStats });
 
-    // Calculate category stats
-    const expensesByCategory = currentMonthTransactions
+    // Helper function to calculate category stats for a specific scope
+    const calculateCategoryStats = (transactions: Transaction[], totalExpenses: number): CategoryStats[] => {
+      const expensesByCategory = transactions
+        .filter(t => t.type === 'expense')
+        .reduce((acc, t) => {
+          acc[t.category] = (acc[t.category] || 0) + t.amount;
+          return acc;
+        }, {} as Record<string, number>);
+
+      return Object.entries(expensesByCategory).map(([category, amount]) => {
+        const categoryInfo = state.categories.find(c => c.name === category);
+        return {
+          category,
+          amount,
+          percentage: totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0,
+          color: categoryInfo?.color || '#6B7280',
+          transactionCount: transactions.filter(t => t.category === category && t.type === 'expense').length,
+        };
+      }).sort((a, b) => b.amount - a.amount);
+    };
+
+    // Calculate overall category stats (all transactions)
+    const allExpensesByCategory = currentMonthTransactions
       .filter(t => t.type === 'expense')
       .reduce((acc, t) => {
         acc[t.category] = (acc[t.category] || 0) + t.amount;
         return acc;
       }, {} as Record<string, number>);
 
-    const categoryStats: CategoryStats[] = Object.entries(expensesByCategory).map(([category, amount]) => {
+    const categoryStats: CategoryStats[] = Object.entries(allExpensesByCategory).map(([category, amount]) => {
       const categoryInfo = state.categories.find(c => c.name === category);
       return {
         category,
@@ -403,6 +434,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }).sort((a, b) => b.amount - a.amount);
 
     dispatch({ type: 'SET_CATEGORY_STATS', payload: categoryStats });
+
+    // Calculate personal category stats
+    const personalCategoryStats = calculateCategoryStats(personalTransactions, personalExpenses);
+    dispatch({ type: 'SET_PERSONAL_CATEGORY_STATS', payload: personalCategoryStats });
+
+    // Calculate family category stats
+    const familyCategoryStats = calculateCategoryStats(familyTransactions, familyExpenses);
+    dispatch({ type: 'SET_FAMILY_CATEGORY_STATS', payload: familyCategoryStats });
   };
 
   const showToast = (toast: Toast) => {
