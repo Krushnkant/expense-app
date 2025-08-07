@@ -8,7 +8,7 @@ import {
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, Filter, Plus, CreditCard as Edit3, Trash2, ChevronDown, X, Calendar, Users, Tag, UserCircle } from 'lucide-react-native';
+import { Search, Filter, Plus, CreditCard as Edit3, Trash2, ChevronDown, X, Calendar, Users, Tag, CircleUser as UserCircle } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { formatAmount } from '@/utils/currency';
