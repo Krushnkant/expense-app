@@ -659,10 +659,10 @@ export default function Transactions() {
                   <Text style={styles.dateText}>{formatDateGroup(date)}</Text>
                   <View style={styles.dayTotalContainer}>
                     {dayTotal.income > 0 && (
-                      <Text style={styles.dayIncome}>+{formatAmount(dayTotal.income, userCurrency)}</Text>
+                      <Text style={styles.dayIncome}>{`+${formatAmount(dayTotal.income, userCurrency)}`}</Text>
                     )}
                     {dayTotal.expenses > 0 && (
-                      <Text style={styles.dayExpenses}>-{formatAmount(dayTotal.expenses, userCurrency)}</Text>
+                      <Text style={styles.dayExpenses}>{`-${formatAmount(dayTotal.expenses, userCurrency)}`}</Text>
                     )}
                   </View>
                 </View>
