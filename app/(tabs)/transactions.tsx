@@ -34,6 +34,7 @@ export default function Transactions() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [datePickerType, setDatePickerType] = useState<'start' | 'end'>('start');
   const [showFilters, setShowFilters] = useState(false);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -45,15 +46,35 @@ export default function Transactions() {
   const styles = createStyles(colors);
   const userCurrency = state.user?.currency || 'INR';
 
-  // Get unique categories from transactions
-  const availableCategories = Array.from(new Set(state.transactions.map(t => t.category)))
-    .map(categoryName => {
-      const category = state.categories.find(c => c.name === categoryName);
-      return {
-        name: categoryName,
-        color: category?.color || '#6B7280'
-      };
-    });
+  // Get categories based on selected scope
+  const getAvailableCategories = () => {
+    let categories = state.categories;
+    
+    // Filter by scope if not 'all'
+    if (scopeFilter !== 'all') {
+      categories = categories.filter(c => c.scopes.includes(scopeFilter));
+    }
+    
+    // Get unique categories from transactions that match the scope filter
+    const usedCategoryNames = Array.from(new Set(
+      state.transactions
+        .filter(t => scopeFilter === 'all' || t.scope === scopeFilter)
+        .map(t => t.category)
+    ));
+    
+    return usedCategoryNames
+      .map(categoryName => {
+        const category = categories.find(c => c.name === categoryName);
+        return category ? {
+          name: categoryName,
+          color: category.color,
+          icon: category.icon
+        } : null;
+      })
+      .filter(Boolean) as Array<{ name: string; color: string; icon: string }>;
+  };
+
+  const availableCategories = getAvailableCategories();
 
   // Mock family members (in real app, this would come from family context)
   const familyMembers = [
@@ -145,8 +166,14 @@ export default function Transactions() {
   const handleDateSelect = (selectedDate: string) => {
     if (datePickerType === 'start') {
       setCustomStartDate(selectedDate);
+      if (dateRangeFilter !== 'custom') {
+        setDateRangeFilter('custom');
+      }
     } else {
       setCustomEndDate(selectedDate);
+      if (dateRangeFilter !== 'custom') {
+        setDateRangeFilter('custom');
+      }
     }
     setShowDatePicker(false);
   };
@@ -368,105 +395,155 @@ export default function Transactions() {
           {/* Category Filter */}
           <View style={styles.filterSection}>
             <Text style={styles.filterLabel}>Category</Text>
-            <View style={styles.categoryFilterContainer}>
-              <View style={styles.categoryFilterSelected}>
+            <TouchableOpacity 
+              style={styles.categoryDropdownButton}
+              onPress={() => setShowCategoryDropdown(!showCategoryDropdown)}
+            >
+              <View style={styles.categoryDropdownContent}>
                 <Tag size={16} color={colors.textTertiary} />
-                <Text style={styles.categoryFilterText}>
-                  {categoryFilter === 'all' ? 'All Categories' : categoryFilter}
-                </Text>
-                <ChevronDown size={16} color={colors.textTertiary} />
+                <View style={styles.categoryDropdownTextContainer}>
+                  <Text style={styles.categoryDropdownText}>
+                    {categoryFilter === 'all' ? 'All Categories' : categoryFilter}
+                  </Text>
+                  {categoryFilter !== 'all' && (
+                    <View style={styles.categoryIndicator}>
+                      <View style={[
+                        styles.categoryIndicatorDot, 
+                        { backgroundColor: availableCategories.find(c => c.name === categoryFilter)?.color || '#6B7280' }
+                      ]} />
+                    </View>
+                  )}
+                </View>
+                <ChevronDown 
+                  size={16} 
+                  color={colors.textTertiary}
+                  style={[
+                    styles.chevronIcon,
+                    showCategoryDropdown && styles.chevronIconRotated
+                  ]}
+                />
               </View>
-              <ScrollView 
-                horizontal 
-                showsHorizontalScrollIndicator={false}
-                style={styles.categoryScrollView}
-                contentContainerStyle={styles.categoryScrollContent}
-              >
+            </TouchableOpacity>
+            
+            {showCategoryDropdown && (
+              <View style={styles.categoryDropdownList}>
                 <TouchableOpacity
                   style={[
-                    styles.categoryChip,
-                    categoryFilter === 'all' && styles.categoryChipActive
+                    styles.categoryDropdownItem,
+                    categoryFilter === 'all' && styles.categoryDropdownItemActive
                   ]}
-                  onPress={() => setCategoryFilter('all')}
+                  onPress={() => {
+                    setCategoryFilter('all');
+                    setShowCategoryDropdown(false);
+                  }}
                 >
                   <Text style={[
-                    styles.categoryChipText,
-                    categoryFilter === 'all' && styles.categoryChipTextActive
+                    styles.categoryDropdownItemText,
+                    categoryFilter === 'all' && styles.categoryDropdownItemTextActive
                   ]}>
-                    All
+                    All Categories
                   </Text>
+                  {categoryFilter === 'all' && (
+                    <View style={styles.selectedIndicator}>
+                      <Text style={styles.selectedIndicatorText}>✓</Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
                 {availableCategories.map(category => (
                   <TouchableOpacity
                     key={category.name}
                     style={[
-                      styles.categoryChip,
-                      categoryFilter === category.name && styles.categoryChipActive
+                      styles.categoryDropdownItem,
+                      categoryFilter === category.name && styles.categoryDropdownItemActive
                     ]}
-                    onPress={() => setCategoryFilter(category.name)}
+                    onPress={() => {
+                      setCategoryFilter(category.name);
+                      setShowCategoryDropdown(false);
+                    }}
                   >
-                    <View style={[styles.categoryChipDot, { backgroundColor: category.color }]} />
-                    <Text style={[
-                      styles.categoryChipText,
-                      categoryFilter === category.name && styles.categoryChipTextActive
-                    ]}>
-                      {category.name}
-                    </Text>
+                    <View style={styles.categoryDropdownItemContent}>
+                      <View style={[styles.categoryDropdownDot, { backgroundColor: category.color }]} />
+                      <Text style={[
+                        styles.categoryDropdownItemText,
+                        categoryFilter === category.name && styles.categoryDropdownItemTextActive
+                      ]}>
+                        {category.name}
+                      </Text>
+                    </View>
+                    {categoryFilter === category.name && (
+                      <View style={styles.selectedIndicator}>
+                        <Text style={styles.selectedIndicatorText}>✓</Text>
+                      </View>
+                    )}
                   </TouchableOpacity>
                 ))}
-              </ScrollView>
-            </View>
+              </View>
+            )}
           </View>
 
           {/* Date Range Filter */}
           <View style={styles.filterSection}>
             <Text style={styles.filterLabel}>Date Range</Text>
-            <View style={styles.filterOptions}>
+            <View style={styles.dateRangeContainer}>
               {[
-                { key: 'today', label: 'Today' },
-                { key: 'yesterday', label: 'Yesterday' },
-                { key: 'last7days', label: 'Last 7 days' },
-                { key: 'thismonth', label: 'This Month' },
-                { key: 'custom', label: 'Custom' },
+                { key: 'today', label: 'Today', icon: Calendar },
+                { key: 'yesterday', label: 'Yesterday', icon: Calendar },
+                { key: 'last7days', label: 'Last 7 days', icon: Calendar },
+                { key: 'thismonth', label: 'This Month', icon: Calendar },
+                { key: 'custom', label: 'Custom Range', icon: Calendar },
               ].map(option => (
                 <TouchableOpacity
                   key={option.key}
                   style={[
-                    styles.filterOption,
-                    dateRangeFilter === option.key && styles.filterOptionActive
+                    styles.dateRangeOption,
+                    dateRangeFilter === option.key && styles.dateRangeOptionActive
                   ]}
-                  onPress={() => setDateRangeFilter(option.key as any)}
+                  onPress={() => {
+                    if (option.key === 'custom') {
+                      setDateRangeFilter('custom');
+                      handleDatePickerOpen('start');
+                    } else {
+                      setDateRangeFilter(option.key as any);
+                    }
+                  }}
                 >
-                  <Text style={[
-                    styles.filterOptionText,
-                    dateRangeFilter === option.key && styles.filterOptionTextActive
-                  ]}>
-                    {option.label}
-                  </Text>
+                  <View style={styles.dateRangeOptionContent}>
+                    <option.icon 
+                      size={16} 
+                      color={dateRangeFilter === option.key ? '#FFFFFF' : colors.textTertiary} 
+                    />
+                    <Text style={[
+                      styles.dateRangeOptionText,
+                      dateRangeFilter === option.key && styles.dateRangeOptionTextActive
+                    ]}>
+                      {option.label}
+                    </Text>
+                  </View>
+                  {dateRangeFilter === option.key && (
+                    <View style={styles.activeIndicator} />
+                  )}
                 </TouchableOpacity>
               ))}
             </View>
             
             {/* Custom Date Range */}
-            {dateRangeFilter === 'custom' && (
-              <View style={styles.customDateContainer}>
+            {dateRangeFilter === 'custom' && (customStartDate || customEndDate) && (
+              <View style={styles.customDateDisplay}>
+                <Text style={styles.customDateLabel}>Selected Range:</Text>
+                <View style={styles.customDateRange}>
+                  <Text style={styles.customDateText}>
+                    {customStartDate ? formatDateForDisplay(customStartDate) : 'Start date'}
+                  </Text>
+                  <Text style={styles.customDateSeparator}>to</Text>
+                  <Text style={styles.customDateText}>
+                    {customEndDate ? formatDateForDisplay(customEndDate) : 'End date'}
+                  </Text>
+                </View>
                 <TouchableOpacity
-                  style={styles.dateButton}
+                  style={styles.changeDateButton}
                   onPress={() => handleDatePickerOpen('start')}
                 >
-                  <Calendar size={16} color={colors.textTertiary} />
-                  <Text style={styles.dateButtonText}>
-                    From: {formatDateForDisplay(customStartDate)}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.dateButton}
-                  onPress={() => handleDatePickerOpen('end')}
-                >
-                  <Calendar size={16} color={colors.textTertiary} />
-                  <Text style={styles.dateButtonText}>
-                    To: {formatDateForDisplay(customEndDate)}
-                  </Text>
+                  <Text style={styles.changeDateButtonText}>Change Dates</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -760,69 +837,195 @@ const createStyles = (colors: any) => StyleSheet.create({
   categoryFilterContainer: {
     gap: 12,
   },
-  categoryFilterSelected: {
+  categoryDropdownButton: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  categoryDropdownContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.borderLight,
     padding: 12,
-    borderRadius: 12,
     gap: 8,
   },
-  categoryFilterText: {
+  categoryDropdownTextContainer: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  categoryDropdownText: {
     fontSize: 14,
     fontWeight: '500',
     color: colors.text,
   },
-  categoryScrollView: {
-    maxHeight: 40,
-  },
-  categoryScrollContent: {
-    gap: 8,
-  },
-  categoryChip: {
+  categoryIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 16,
-    backgroundColor: colors.borderLight,
-    gap: 6,
   },
-  categoryChipActive: {
-    backgroundColor: '#4facfe',
-  },
-  categoryChipDot: {
+  categoryIndicatorDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
   },
-  categoryChipText: {
-    fontSize: 12,
+  chevronIcon: {
+    transform: [{ rotate: '0deg' }],
+  },
+  chevronIconRotated: {
+    transform: [{ rotate: '180deg' }],
+  },
+  categoryDropdownList: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginTop: 8,
+    maxHeight: 200,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  categoryDropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+  },
+  categoryDropdownItemActive: {
+    backgroundColor: colors.primaryLight,
+  },
+  categoryDropdownItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  categoryDropdownDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  categoryDropdownItemText: {
+    fontSize: 14,
     fontWeight: '600',
     color: colors.textTertiary,
   },
-  categoryChipTextActive: {
+  categoryDropdownItemTextActive: {
+    color: colors.primary,
+  },
+  selectedIndicator: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedIndicatorText: {
+    fontSize: 12,
+    fontWeight: '700',
     color: '#FFFFFF',
   },
-  customDateContainer: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 12,
-  },
-  dateButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.borderLight,
-    padding: 12,
-    borderRadius: 12,
+  dateRangeContainer: {
     gap: 8,
   },
-  dateButtonText: {
+  dateRangeOption: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+    position: 'relative',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  dateRangeOptionActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  dateRangeOptionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    gap: 10,
+  },
+  dateRangeOptionText: {
     fontSize: 14,
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  dateRangeOptionTextActive: {
+    color: '#FFFFFF',
+  },
+  activeIndicator: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 3,
+    backgroundColor: '#FFFFFF',
+  },
+  customDateDisplay: {
+    backgroundColor: colors.primaryLight,
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  customDateLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.primary,
+    marginBottom: 8,
+  },
+  customDateRange: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  customDateText: {
+    fontSize: 14,
+    fontWeight: '600',
     color: colors.text,
+    backgroundColor: colors.surface,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  customDateSeparator: {
+    fontSize: 12,
+    color: colors.textTertiary,
     fontWeight: '500',
+  },
+  changeDateButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  changeDateButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   resultsHeader: {
     flexDirection: 'row',
