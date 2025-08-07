@@ -253,12 +253,17 @@ export default function Family() {
               <Text style={styles.budgetStatLabel}>Total Budget</Text>
             </View>
             <View style={styles.budgetStatItem}>
+              <TrendingUp size={24} color="#10B981" />
+              <Text style={styles.budgetStatValue}>{formatAmount(state.monthlyStats.familyIncome, userCurrency)}</Text>
+              <Text style={styles.budgetStatLabel}>Family Income</Text>
+            </View>
+            <View style={styles.budgetStatItem}>
               <TrendingDown size={24} color="#EF4444" />
              <Text style={styles.budgetStatValue}>{formatAmount(familyGroup.budget.spent, userCurrency)}</Text>
               <Text style={styles.budgetStatLabel}>Spent</Text>
             </View>
             <View style={styles.budgetStatItem}>
-              <TrendingUp size={24} color="#4facfe" />
+              <DollarSign size={24} color="#4facfe" />
               <Text style={styles.budgetStatValue}>
                 {formatAmount(familyGroup.budget.monthly - familyGroup.budget.spent, userCurrency)}
               </Text>
@@ -484,12 +489,17 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   budgetStats: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: 20,
+    gap: 12,
   },
   budgetStatItem: {
     alignItems: 'center',
-    flex: 1,
+    width: '47%',
+    backgroundColor: colors.borderLight,
+    padding: 16,
+    borderRadius: 12,
   },
   budgetStatValue: {
     fontSize: 18,

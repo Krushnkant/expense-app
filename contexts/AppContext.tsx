@@ -389,6 +389,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       netSavings: personalNetSavings, // Show personal net savings for budget comparison
       budgetUsed,
       transactionCount: currentMonthTransactions.length,
+      familyIncome,
+      familyExpenses,
     };
 
     dispatch({ type: 'SET_MONTHLY_STATS', payload: monthlyStats });

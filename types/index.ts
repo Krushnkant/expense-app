@@ -54,6 +54,8 @@ export interface MonthlyStats {
   netSavings: number;
   budgetUsed: number;
   transactionCount: number;
+  familyIncome: number;
+  familyExpenses: number;
 }
 
 export interface CategoryStats {
