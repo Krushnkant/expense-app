@@ -865,8 +865,8 @@ const createStyles = (colors: any) => StyleSheet.create({
   filterOption: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    borderRadius: 12,
-    backgroundColor: colors.borderLight,
+    borderRadius: 10,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: 'transparent',
   },
