@@ -526,7 +526,6 @@ export default function Transactions() {
               ))}
             </View>
             
-            {/* Custom Date Range */}
             {dateRangeFilter === 'custom' && (customStartDate || customEndDate) && (
               <View style={styles.customDateDisplay}>
                 <Text style={styles.customDateLabel}>Selected Range:</Text>
@@ -669,7 +668,7 @@ export default function Transactions() {
         cancelText="Cancel"
       />
 
-      {/* Date Picker for Custom Range */}
+      {showDatePicker && (
       <DatePicker
         visible={showDatePicker}
         onClose={() => setShowDatePicker(false)}
@@ -678,6 +677,7 @@ export default function Transactions() {
         title={`Select ${datePickerType === 'start' ? 'Start' : 'End'} Date`}
         maxDate={new Date().toISOString().split('T')[0]}
       />
+      )}
     </SafeAreaView>
   );
 }
