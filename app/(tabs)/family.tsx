@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Users, Plus, Settings, Crown, UserPlus, DollarSign, TrendingUp, TrendingDown, Calendar, MoveVertical as MoreVertical, CreditCard as Edit3, Trash2, User } from 'lucide-react-native';
+import { Users, Plus, Crown, UserPlus, DollarSign, TrendingUp, TrendingDown, Calendar, MoveVertical as MoreVertical, CreditCard as Edit3, Trash2, User } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { formatAmount } from '@/utils/currency';
@@ -228,13 +228,10 @@ export default function Family() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <View>
+        <View style={styles.headerContent}>
           <Text style={styles.title}>Family Budget</Text>
           <Text style={styles.subtitle}>{familyGroup.name}</Text>
         </View>
-        <TouchableOpacity style={styles.settingsButton}>
-          <Settings size={24} color={colors.textTertiary} />
-        </TouchableOpacity>
       </View>
 
       {/* Tab Navigation */}
@@ -431,13 +428,13 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 20,
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
+  },
+  headerContent: {
+    alignItems: 'flex-start',
   },
   title: {
     fontSize: 24,
@@ -449,14 +446,6 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.textTertiary,
     fontWeight: '500',
     marginTop: 2,
-  },
-  settingsButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.borderLight,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   tabContainer: {
     flexDirection: 'row',
