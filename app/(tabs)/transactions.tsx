@@ -42,6 +42,9 @@ export default function Transactions() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
 
+  // Add missing state for filter visibility
+  const [showFilters, setShowFilters] = useState(false);
+
   const { colors } = themeState.theme;
   const styles = createStyles(colors);
   const userCurrency = state.user?.currency || 'INR';
@@ -306,7 +309,19 @@ export default function Transactions() {
           />
         </View>
         <TouchableOpacity style={styles.filterButton}>
+        <TouchableOpacity 
+          style={[
+            styles.filterButton,
+            getActiveFilterCount() > 0 && styles.filterButtonActive
+          ]}
+          onPress={() => setShowFilters(!showFilters)}
+        >
           <Filter size={20} color={colors.textTertiary} />
+          {getActiveFilterCount() > 0 && (
+            <View style={styles.filterBadge}>
+              <Text style={styles.filterBadgeText}>{getActiveFilterCount()}</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
 
