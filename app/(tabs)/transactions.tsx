@@ -35,6 +35,7 @@ export default function Transactions() {
   const [datePickerType, setDatePickerType] = useState<'start' | 'end'>('start');
   const [showFilters, setShowFilters] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showMemberDropdown, setShowMemberDropdown] = useState(false);
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -551,39 +552,86 @@ export default function Transactions() {
           {/* Member Filter */}
           <View style={styles.filterSection}>
             <Text style={styles.filterLabel}>Member</Text>
-            <View style={styles.filterOptions}>
-              <TouchableOpacity
-                style={[
-                  styles.filterOption,
-                  memberFilter === 'all' && styles.filterOptionActive
-                ]}
-                onPress={() => setMemberFilter('all')}
-              >
-                <Text style={[
-                  styles.filterOptionText,
-                  memberFilter === 'all' && styles.filterOptionTextActive
-                ]}>
-                  All Members
-                </Text>
-              </TouchableOpacity>
-              {familyMembers.map(member => (
-                <TouchableOpacity
-                  key={member.id}
+            <TouchableOpacity 
+              style={styles.categoryDropdownButton}
+              onPress={() => setShowMemberDropdown(!showMemberDropdown)}
+            >
+              <View style={styles.categoryDropdownContent}>
+                <User size={16} color={colors.textTertiary} />
+                <View style={styles.categoryDropdownTextContainer}>
+                  <Text style={styles.categoryDropdownText}>
+                    {memberFilter === 'all' ? 'All Members' : familyMembers.find(m => m.id === memberFilter)?.name || 'All Members'}
+                  </Text>
+                </View>
+                <ChevronDown 
+                  size={16} 
+                  color={colors.textTertiary}
                   style={[
-                    styles.filterOption,
-                    memberFilter === member.id && styles.filterOptionActive
+                    styles.chevronIcon,
+                    showMemberDropdown && styles.chevronIconRotated
                   ]}
-                  onPress={() => setMemberFilter(member.id)}
+                />
+              </View>
+            </TouchableOpacity>
+            
+            {showMemberDropdown && (
+              <View style={styles.categoryDropdownList}>
+                <TouchableOpacity
+                  style={[
+                    styles.categoryDropdownItem,
+                    memberFilter === 'all' && styles.categoryDropdownItemActive
+                  ]}
+                  onPress={() => {
+                    setMemberFilter('all');
+                    setShowMemberDropdown(false);
+                  }}
                 >
                   <Text style={[
-                    styles.filterOptionText,
-                    memberFilter === member.id && styles.filterOptionTextActive
+                    styles.categoryDropdownItemText,
+                    memberFilter === 'all' && styles.categoryDropdownItemTextActive
                   ]}>
-                    {member.name}
+                    All Members
                   </Text>
+                  {memberFilter === 'all' && (
+                    <View style={styles.selectedIndicator}>
+                      <Text style={styles.selectedIndicatorText}>✓</Text>
+                    </View>
+                  )}
                 </TouchableOpacity>
-              ))}
-            </View>
+                {familyMembers.map(member => (
+                  <TouchableOpacity
+                    key={member.id}
+                    style={[
+                      styles.categoryDropdownItem,
+                      memberFilter === member.id && styles.categoryDropdownItemActive
+                    ]}
+                    onPress={() => {
+                      setMemberFilter(member.id);
+                      setShowMemberDropdown(false);
+                    }}
+                  >
+                    <View style={styles.categoryDropdownItemContent}>
+                      <View style={styles.memberAvatar}>
+                        <Text style={styles.memberAvatarText}>
+                          {member.name.charAt(0)}
+                        </Text>
+                      </View>
+                      <Text style={[
+                        styles.categoryDropdownItemText,
+                        memberFilter === member.id && styles.categoryDropdownItemTextActive
+                      ]}>
+                        {member.name}
+                      </Text>
+                    </View>
+                    {memberFilter === member.id && (
+                      <View style={styles.selectedIndicator}>
+                        <Text style={styles.selectedIndicatorText}>✓</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </View>
         </ScrollView>
       )}
@@ -1026,6 +1074,19 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  memberAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.borderLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  memberAvatarText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: colors.textSecondary,
   },
   resultsHeader: {
     flexDirection: 'row',
