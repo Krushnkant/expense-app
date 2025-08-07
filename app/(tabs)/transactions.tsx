@@ -8,7 +8,7 @@ import {
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, Filter, Plus, CreditCard as Edit3, Trash2, ChevronDown, X, Calendar, Users, Tag } from 'lucide-react-native';
+import { Search, Filter, Plus, CreditCard as Edit3, Trash2, ChevronDown, X, Calendar, Users, Tag, UserCircle } from 'lucide-react-native';
 import { useApp } from '@/contexts/AppContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { formatAmount } from '@/utils/currency';
@@ -557,7 +557,7 @@ export default function Transactions() {
               onPress={() => setShowMemberDropdown(!showMemberDropdown)}
             >
               <View style={styles.categoryDropdownContent}>
-                <User size={16} color={colors.textTertiary} />
+                <UserCircle size={16} color={colors.textTertiary} />
                 <View style={styles.categoryDropdownTextContainer}>
                   <Text style={styles.categoryDropdownText}>
                     {memberFilter === 'all' ? 'All Members' : familyMembers.find(m => m.id === memberFilter)?.name || 'All Members'}
