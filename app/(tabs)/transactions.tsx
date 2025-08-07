@@ -349,7 +349,7 @@ export default function Transactions() {
 
       {/* Advanced Filters */}
       {showFilters && (
-        <View style={styles.filtersContainer}>
+        <ScrollView style={styles.filtersContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.filtersHeader}>
             <Text style={styles.filtersTitle}>Filters</Text>
             <View style={styles.filtersActions}>
@@ -586,7 +586,7 @@ export default function Transactions() {
               ))}
             </View>
           </View>
-        </View>
+        </ScrollView>
       )}
 
       {/* Transactions List */}
