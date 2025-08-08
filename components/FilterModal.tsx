@@ -655,9 +655,13 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: '#FFFFFF',
   },
   dateRangeContainer: {
-    gap: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
   },
   dateRangeOption: {
+    flex: 1,
+    minWidth: '48%',
     backgroundColor: colors.surface,
     borderRadius: 8,
     borderWidth: 2,
@@ -681,13 +685,15 @@ const createStyles = (colors: any) => StyleSheet.create({
   dateRangeOptionContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    padding: 10,
     gap: 8,
+    justifyContent: 'center',
   },
   dateRangeOptionText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: colors.textSecondary,
+    textAlign: 'center',
   },
   dateRangeOptionTextActive: {
     color: '#FFFFFF',
