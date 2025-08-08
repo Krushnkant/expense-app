@@ -11,6 +11,23 @@ import { formatAmount } from '@/utils/currency';
 import { useApp } from '@/contexts/AppContext';
 import { Transaction } from '@/types';
 
+// Helper function to safely get Lucide icon component
+const getLucideIcon = (iconName?: string) => {
+  if (!iconName || typeof iconName !== 'string' || iconName.trim() === '') {
+    return Icons.Circle;
+  }
+  
+  // Check if the iconName exists in the Icons object
+  const IconComponent = (Icons as any)[iconName];
+  
+  // If it's a valid React component, return it; otherwise return default
+  if (IconComponent && typeof IconComponent === 'function') {
+    return IconComponent;
+  }
+  
+  return Icons.Circle;
+};
+
 interface TransactionItemProps {
   transaction: Transaction;
   categoryColor?: string;
@@ -56,7 +73,7 @@ export default function TransactionItem({
     >
       <View style={styles.leftSection}>
         <View style={[styles.iconContainer, { backgroundColor: categoryColor + '10' }]}>
-          {React.createElement((Icons as any)[categoryIcon || 'Circle'] || Icons.Circle, {
+          {React.createElement(getLucideIcon(categoryIcon), {
             size: 20,
             color: categoryColor
           })}
