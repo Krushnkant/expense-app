@@ -344,28 +344,25 @@ export default function Transactions() {
             <View style={styles.filterBadge}>
               <Text style={styles.filterBadgeText}>{getActiveFilterCount()}</Text>
             </View>
-          {dateRangeFilter === 'custom' && (
+          )}
         </TouchableOpacity>
       </View>
 
-                <TouchableOpacity
-                  style={styles.customDateButton}
-                  onPress={() => handleDatePickerOpen('start')}
-                >
-                  <Text style={styles.customDateText}>
-                    {customStartDate ? formatDateForDisplay(customStartDate) : 'Select start date'}
-                  </Text>
-                </TouchableOpacity>
+      {/* Filters */}
+      {showFilters && (
+        <ScrollView style={styles.filtersContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.filtersHeader}>
-                <TouchableOpacity
-                  style={styles.customDateButton}
-                  onPress={() => handleDatePickerOpen('end')}
-                >
-                  <Text style={styles.customDateText}>
-                    {customEndDate ? formatDateForDisplay(customEndDate) : 'Select end date'}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={clearAllFilters} style={styles.clearButton}>
+            <Text style={styles.filtersTitle}>Filters</Text>
+            <View style={styles.filtersActions}>
+              <TouchableOpacity onPress={clearAllFilters} style={styles.clearButton}>
+                <Text style={styles.clearButtonText}>Clear All</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.closeFiltersButton}
+                onPress={() => setShowFilters(false)}
+              >
+                <X size={16} color={colors.textTertiary} />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -531,24 +528,28 @@ export default function Transactions() {
               ))}
             </View>
             
-            {dateRangeFilter === 'custom' && (customStartDate || customEndDate) && (
+            {dateRangeFilter === 'custom' && (
               <View style={styles.customDateDisplay}>
                 <Text style={styles.customDateLabel}>Selected Range:</Text>
                 <View style={styles.customDateRange}>
-                  <Text style={styles.customDateText}>
-                    {customStartDate ? formatDateForDisplay(customStartDate) : 'Start date'}
-                  </Text>
+                  <TouchableOpacity
+                    style={styles.customDateButton}
+                    onPress={() => handleDatePickerOpen('start')}
+                  >
+                    <Text style={styles.customDateText}>
+                      {customStartDate ? formatDateForDisplay(customStartDate) : 'Select start date'}
+                    </Text>
+                  </TouchableOpacity>
                   <Text style={styles.customDateSeparator}>to</Text>
-                  <Text style={styles.customDateText}>
-                    {customEndDate ? formatDateForDisplay(customEndDate) : 'End date'}
-                  </Text>
+                  <TouchableOpacity
+                    style={styles.customDateButton}
+                    onPress={() => handleDatePickerOpen('end')}
+                  >
+                    <Text style={styles.customDateText}>
+                      {customEndDate ? formatDateForDisplay(customEndDate) : 'Select end date'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  style={styles.changeDateButton}
-                  onPress={() => handleDatePickerOpen('start')}
-                >
-                  <Text style={styles.changeDateButtonText}>Change Dates</Text>
-                </TouchableOpacity>
               </View>
             )}
           </View>
@@ -721,14 +722,14 @@ export default function Transactions() {
       />
 
       {showDatePicker && (
-      <DatePicker
-        visible={showDatePicker}
-        onClose={() => setShowDatePicker(false)}
-        selectedDate={datePickerType === 'start' ? customStartDate : customEndDate}
-        onDateSelect={handleDateSelect}
-        title={`Select ${datePickerType === 'start' ? 'Start' : 'End'} Date`}
-        maxDate={new Date().toISOString().split('T')[0]}
-      />
+        <DatePicker
+          visible={showDatePicker}
+          onClose={() => setShowDatePicker(false)}
+          selectedDate={datePickerType === 'start' ? customStartDate : customEndDate}
+          onDateSelect={handleDateSelect}
+          title={`Select ${datePickerType === 'start' ? 'Start' : 'End'} Date`}
+          maxDate={new Date().toISOString().split('T')[0]}
+        />
       )}
     </SafeAreaView>
   );
@@ -1053,6 +1054,12 @@ const createStyles = (colors: any) => StyleSheet.create({
     gap: 8,
     marginBottom: 12,
   },
+  customDateButton: {
+    backgroundColor: colors.surface,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
   customDateText: {
     fontSize: 14,
     fontWeight: '600',
@@ -1063,13 +1070,17 @@ const createStyles = (colors: any) => StyleSheet.create({
     color: colors.textTertiary,
     fontWeight: '500',
   },
-  customDateButton: {
+  changeDateButton: {
     backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    flex: 1,
-    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
+  changeDateButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   memberAvatar: {
     width: 24,
