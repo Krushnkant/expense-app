@@ -167,6 +167,10 @@ export default function Transactions() {
   const handleDateSelect = (selectedDate: string) => {
     if (datePickerType === 'start') {
       setCustomStartDate(selectedDate);
+     // If end date is set and is before the new start date, clear it
+     if (customEndDate && selectedDate > customEndDate) {
+       setCustomEndDate('');
+     }
       if (dateRangeFilter !== 'custom') {
         setDateRangeFilter('custom');
       }
@@ -728,6 +732,7 @@ export default function Transactions() {
           selectedDate={datePickerType === 'start' ? customStartDate : customEndDate}
           onDateSelect={handleDateSelect}
           title={`Select ${datePickerType === 'start' ? 'Start' : 'End'} Date`}
+         minDate={datePickerType === 'end' && customStartDate ? customStartDate : undefined}
           maxDate={new Date().toISOString().split('T')[0]}
         />
       )}
