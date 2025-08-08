@@ -193,56 +193,62 @@ export default function FilterModal({
             
             {showCategoryDropdown && (
               <View style={styles.categoryDropdownList}>
-                <TouchableOpacity
-                  style={[
-                    styles.categoryDropdownItem,
-                    categoryFilter === 'all' && styles.categoryDropdownItemActive
-                  ]}
-                  onPress={() => {
-                    setCategoryFilter('all');
-                    setShowCategoryDropdown(false);
-                  }}
+                <ScrollView 
+                  style={styles.dropdownScrollView}
+                  showsVerticalScrollIndicator={true}
+                  nestedScrollEnabled={true}
                 >
-                  <Text style={[
-                    styles.categoryDropdownItemText,
-                    categoryFilter === 'all' && styles.categoryDropdownItemTextActive
-                  ]}>
-                    All Categories
-                  </Text>
-                  {categoryFilter === 'all' && (
-                    <View style={styles.selectedIndicator}>
-                      <Text style={styles.selectedIndicatorText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-                {availableCategories.map(category => (
                   <TouchableOpacity
-                    key={category.name}
                     style={[
                       styles.categoryDropdownItem,
-                      categoryFilter === category.name && styles.categoryDropdownItemActive
+                      categoryFilter === 'all' && styles.categoryDropdownItemActive
                     ]}
                     onPress={() => {
-                      setCategoryFilter(category.name);
+                      setCategoryFilter('all');
                       setShowCategoryDropdown(false);
                     }}
                   >
-                    <View style={styles.categoryDropdownItemContent}>
-                      <View style={[styles.categoryDropdownDot, { backgroundColor: category.color }]} />
-                      <Text style={[
-                        styles.categoryDropdownItemText,
-                        categoryFilter === category.name && styles.categoryDropdownItemTextActive
-                      ]}>
-                        {category.name}
-                      </Text>
-                    </View>
-                    {categoryFilter === category.name && (
+                    <Text style={[
+                      styles.categoryDropdownItemText,
+                      categoryFilter === 'all' && styles.categoryDropdownItemTextActive
+                    ]}>
+                      All Categories
+                    </Text>
+                    {categoryFilter === 'all' && (
                       <View style={styles.selectedIndicator}>
                         <Text style={styles.selectedIndicatorText}>✓</Text>
                       </View>
                     )}
                   </TouchableOpacity>
-                ))}
+                  {availableCategories.map(category => (
+                    <TouchableOpacity
+                      key={category.name}
+                      style={[
+                        styles.categoryDropdownItem,
+                        categoryFilter === category.name && styles.categoryDropdownItemActive
+                      ]}
+                      onPress={() => {
+                        setCategoryFilter(category.name);
+                        setShowCategoryDropdown(false);
+                      }}
+                    >
+                      <View style={styles.categoryDropdownItemContent}>
+                        <View style={[styles.categoryDropdownDot, { backgroundColor: category.color }]} />
+                        <Text style={[
+                          styles.categoryDropdownItemText,
+                          categoryFilter === category.name && styles.categoryDropdownItemTextActive
+                        ]}>
+                          {category.name}
+                        </Text>
+                      </View>
+                      {categoryFilter === category.name && (
+                        <View style={styles.selectedIndicator}>
+                          <Text style={styles.selectedIndicatorText}>✓</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
             )}
           </View>
@@ -347,60 +353,66 @@ export default function FilterModal({
             
             {showMemberDropdown && (
               <View style={styles.categoryDropdownList}>
-                <TouchableOpacity
-                  style={[
-                    styles.categoryDropdownItem,
-                    memberFilter === 'all' && styles.categoryDropdownItemActive
-                  ]}
-                  onPress={() => {
-                    setMemberFilter('all');
-                    setShowMemberDropdown(false);
-                  }}
+                <ScrollView 
+                  style={styles.dropdownScrollView}
+                  showsVerticalScrollIndicator={true}
+                  nestedScrollEnabled={true}
                 >
-                  <Text style={[
-                    styles.categoryDropdownItemText,
-                    memberFilter === 'all' && styles.categoryDropdownItemTextActive
-                  ]}>
-                    All Members
-                  </Text>
-                  {memberFilter === 'all' && (
-                    <View style={styles.selectedIndicator}>
-                      <Text style={styles.selectedIndicatorText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-                {familyMembers.map(member => (
                   <TouchableOpacity
-                    key={member.id}
                     style={[
                       styles.categoryDropdownItem,
-                      memberFilter === member.id && styles.categoryDropdownItemActive
+                      memberFilter === 'all' && styles.categoryDropdownItemActive
                     ]}
                     onPress={() => {
-                      setMemberFilter(member.id);
+                      setMemberFilter('all');
                       setShowMemberDropdown(false);
                     }}
                   >
-                    <View style={styles.categoryDropdownItemContent}>
-                      <View style={styles.memberAvatar}>
-                        <Text style={styles.memberAvatarText}>
-                          {member.name.charAt(0)}
-                        </Text>
-                      </View>
-                      <Text style={[
-                        styles.categoryDropdownItemText,
-                        memberFilter === member.id && styles.categoryDropdownItemTextActive
-                      ]}>
-                        {member.name}
-                      </Text>
-                    </View>
-                    {memberFilter === member.id && (
+                    <Text style={[
+                      styles.categoryDropdownItemText,
+                      memberFilter === 'all' && styles.categoryDropdownItemTextActive
+                    ]}>
+                      All Members
+                    </Text>
+                    {memberFilter === 'all' && (
                       <View style={styles.selectedIndicator}>
                         <Text style={styles.selectedIndicatorText}>✓</Text>
                       </View>
                     )}
                   </TouchableOpacity>
-                ))}
+                  {familyMembers.map(member => (
+                    <TouchableOpacity
+                      key={member.id}
+                      style={[
+                        styles.categoryDropdownItem,
+                        memberFilter === member.id && styles.categoryDropdownItemActive
+                      ]}
+                      onPress={() => {
+                        setMemberFilter(member.id);
+                        setShowMemberDropdown(false);
+                      }}
+                    >
+                      <View style={styles.categoryDropdownItemContent}>
+                        <View style={styles.memberAvatar}>
+                          <Text style={styles.memberAvatarText}>
+                            {member.name.charAt(0).toUpperCase()}
+                          </Text>
+                        </View>
+                        <Text style={[
+                          styles.categoryDropdownItemText,
+                          memberFilter === member.id && styles.categoryDropdownItemTextActive
+                        ]}>
+                          {member.name}
+                        </Text>
+                      </View>
+                      {memberFilter === member.id && (
+                        <View style={styles.selectedIndicator}>
+                          <Text style={styles.selectedIndicatorText}>✓</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
             )}
           </View>
@@ -590,12 +602,15 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     marginTop: 12,
-    maxHeight: 200,
+    maxHeight: 250,
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+  },
+  dropdownScrollView: {
+    maxHeight: 240,
   },
   categoryDropdownItem: {
     flexDirection: 'row',
