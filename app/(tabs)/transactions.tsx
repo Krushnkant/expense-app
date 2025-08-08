@@ -45,36 +45,26 @@ export default function Transactions() {
 
   // Get categories based on selected scope
   const getAvailableCategories = () => {
-    let categories = state.categories;
+    let categories = state.categories.filter(c => c.type === 'expense' || c.type === 'income');
     
     // Filter by scope if not 'all'
     if (scopeFilter !== 'all') {
       categories = categories.filter(c => c.scopes.includes(scopeFilter));
     }
     
-    // Get unique categories from transactions that match the scope filter
-    const usedCategoryNames = Array.from(new Set(
-      state.transactions
-        .filter(t => scopeFilter === 'all' || t.scope === scopeFilter)
-        .map(t => t.category)
-    ));
-    
-    return usedCategoryNames
-      .map(categoryName => {
-        const category = categories.find(c => c.name === categoryName);
-        return category ? {
-          name: categoryName,
-          color: category.color,
-          icon: category.icon
-        } : null;
-      })
-      .filter(Boolean) as Array<{ name: string; color: string; icon: string }>;
+    // Return all available categories (not just used ones)
+    return categories.map(category => ({
+      name: category.name,
+      color: category.color,
+      icon: category.icon
+    }));
   };
 
   const availableCategories = getAvailableCategories();
 
-  // Mock family members (in real app, this would come from family context)
+  // Enhanced family members with current user
   const familyMembers = [
+    { id: 'current', name: state.user?.name || 'You' },
     { id: 'user1', name: 'John Doe' },
     { id: 'user2', name: 'Jane Doe' },
     { id: 'user3', name: 'Alex Doe' },

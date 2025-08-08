@@ -385,9 +385,9 @@ const createStyles = (colors: any) => StyleSheet.create({
   todayIndicator: {
     position: 'absolute',
     bottom: 2,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: colors.primary,
   },
   quickActions: {
