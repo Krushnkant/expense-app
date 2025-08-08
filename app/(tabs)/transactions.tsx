@@ -344,24 +344,28 @@ export default function Transactions() {
             <View style={styles.filterBadge}>
               <Text style={styles.filterBadgeText}>{getActiveFilterCount()}</Text>
             </View>
-          )}
+          {dateRangeFilter === 'custom' && (
         </TouchableOpacity>
       </View>
 
-      {/* Advanced Filters */}
-      {showFilters && (
-        <ScrollView style={styles.filtersContainer} showsVerticalScrollIndicator={false}>
-          <View style={styles.filtersHeader}>
-            <Text style={styles.filtersTitle}>Filters</Text>
-            <View style={styles.filtersActions}>
-              {getActiveFilterCount() > 0 && (
-                <TouchableOpacity onPress={clearAllFilters} style={styles.clearButton}>
-                  <Text style={styles.clearButtonText}>Clear All</Text>
+                <TouchableOpacity
+                  style={styles.customDateButton}
+                  onPress={() => handleDatePickerOpen('start')}
+                >
+                  <Text style={styles.customDateText}>
+                    {customStartDate ? formatDateForDisplay(customStartDate) : 'Select start date'}
+                  </Text>
                 </TouchableOpacity>
-              )}
-              <TouchableOpacity onPress={() => setShowFilters(false)} style={styles.closeFiltersButton}>
-                <X size={20} color={colors.textTertiary} />
-              </TouchableOpacity>
+          <View style={styles.filtersHeader}>
+                <TouchableOpacity
+                  style={styles.customDateButton}
+                  onPress={() => handleDatePickerOpen('end')}
+                >
+                  <Text style={styles.customDateText}>
+                    {customEndDate ? formatDateForDisplay(customEndDate) : 'Select end date'}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={clearAllFilters} style={styles.clearButton}>
             </View>
           </View>
 
@@ -1053,27 +1057,19 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: colors.text,
-    backgroundColor: colors.surface,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
   },
   customDateSeparator: {
     fontSize: 12,
     color: colors.textTertiary,
     fontWeight: '500',
   },
-  changeDateButton: {
+  customDateButton: {
     backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    alignSelf: 'flex-start',
-  },
-  changeDateButtonText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    flex: 1,
+    alignItems: 'center',
   },
   memberAvatar: {
     width: 24,
